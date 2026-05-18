@@ -81,6 +81,29 @@ footer { color: #7a8294; font-size: .8rem; margin-top: 60px; border-top: 1px sol
 
 /* Sources */
 .src-table td:first-child { font-weight: 600; }
+
+/* Image-based map slider */
+.img-slider { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 14px; }
+.img-slider-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.img-slider-controls input[type=range] { flex: 1; min-width: 200px; accent-color: #6cb1ff; }
+.is-btn { background: #2a3142; color: #fff; border: 1px solid #3a4a66; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: .9rem; }
+.is-btn:hover { background: #3a4a66; }
+.is-label { color: #c6cfe2; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.is-speed { display: flex; align-items: center; gap: 6px; color: #8b93a7; font-size: .85rem; }
+.is-speed select { background: #1a1f29; color: #e6e8ec; border: 1px solid #2a2f3a; border-radius: 4px; padding: 4px 6px; }
+.img-slider-stage { background: #0f1115; border-radius: 6px; overflow: hidden; }
+.img-slider-stage img { display: block; width: 100%; height: auto; }
+.img-slider-caption { margin-top: 8px; display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* Filter input + journey table */
+.filter-input { width: 100%; max-width: 480px; background: #1a1f29; color: #e6e8ec; border: 1px solid #2a2f3a; border-radius: 6px; padding: 8px 12px; font-size: .95rem; margin-top: 8px; }
+.filter-input:focus { outline: none; border-color: #6cb1ff; }
+#journey tbody tr:hover { background: #1a1f29; }
+
+/* Rules accordion on index */
+.rules { margin-top: 12px; max-width: 740px; }
+.rules summary { cursor: pointer; color: #6cb1ff; font-size: .95rem; padding: 6px 0; }
+.rules p { color: #a9b0bd; font-size: .95rem; margin: 8px 0; }
 </style>
 </head><body>
 <nav class="topnav"><div class="topnav-inner">

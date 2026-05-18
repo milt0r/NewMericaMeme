@@ -133,6 +133,171 @@ def render_tree(root, children, names) -> str:
     </div>"""
 
 
+def image_slider(rounds, image_rel) -> str:
+    """Round-image slider showing the actual map at each round.
+    Far more accurate than the Plotly choropleth because it preserves the OP's
+    mid-state splits exactly as drawn.
+    """
+    have = [r for r in rounds if image_rel.get(r["round"])]
+    if not have:
+        return '<em class="note">(no images available)</em>'
+    slides = []
+    for r in have:
+        rnd = r["round"]
+        img = image_rel[rnd]
+        elim = (STATES[r["eliminated_state"]]["name"]
+                if r["eliminated_state"] else "—")
+        slides.append({
+            "round": rnd,
+            "img": img,
+            "elim": elim,
+            "title": r.get("post_title") or "",
+        })
+    slides_json = json.dumps(slides)
+    return f"""
+<div class="img-slider">
+  <div class="img-slider-controls">
+    <button class="is-btn" id="is-play">▶ Play</button>
+    <button class="is-btn" id="is-pause" style="display:none;">⏸ Pause</button>
+    <input type="range" id="is-range" min="0" max="{len(slides) - 1}" value="{len(slides) - 1}" step="1"/>
+    <span class="is-label">Round <span id="is-round-label">{slides[-1]['round']}</span></span>
+    <button class="is-btn" id="is-prev">◀</button>
+    <button class="is-btn" id="is-next">▶</button>
+    <label class="is-speed"><span>Speed</span>
+      <select id="is-speed">
+        <option value="1500">Slow</option>
+        <option value="800" selected>Med</option>
+        <option value="350">Fast</option>
+      </select>
+    </label>
+  </div>
+  <div class="img-slider-stage">
+    <img id="is-img" src="{slides[-1]['img']}" alt="round {slides[-1]['round']} map"/>
+  </div>
+  <div class="img-slider-caption">
+    <strong id="is-title">{slides[-1]['title']}</strong>
+    <span class="note" id="is-elim">eliminated: {slides[-1]['elim']}</span>
+  </div>
+</div>
+<script>
+(() => {{
+  const SLIDES = {slides_json};
+  const img = document.getElementById('is-img');
+  const range = document.getElementById('is-range');
+  const lbl = document.getElementById('is-round-label');
+  const title = document.getElementById('is-title');
+  const elim = document.getElementById('is-elim');
+  const playBtn = document.getElementById('is-play');
+  const pauseBtn = document.getElementById('is-pause');
+  const speedSel = document.getElementById('is-speed');
+  let i = SLIDES.length - 1;
+  let timer = null;
+  function paint() {{
+    const s = SLIDES[i];
+    img.src = s.img;
+    lbl.textContent = s.round;
+    title.textContent = s.title;
+    elim.textContent = 'eliminated: ' + s.elim;
+    range.value = i;
+  }}
+  range.addEventListener('input', e => {{ i = +e.target.value; paint(); }});
+  document.getElementById('is-prev').addEventListener('click', () => {{ i = (i - 1 + SLIDES.length) % SLIDES.length; paint(); }});
+  document.getElementById('is-next').addEventListener('click', () => {{ i = (i + 1) % SLIDES.length; paint(); }});
+  function play() {{
+    playBtn.style.display = 'none';
+    pauseBtn.style.display = '';
+    timer = setInterval(() => {{
+      i = (i + 1) % SLIDES.length;
+      paint();
+      if (i === SLIDES.length - 1) {{ stop(); }}
+    }}, +speedSel.value);
+  }}
+  function stop() {{
+    playBtn.style.display = '';
+    pauseBtn.style.display = 'none';
+    if (timer) {{ clearInterval(timer); timer = null; }}
+  }}
+  playBtn.addEventListener('click', () => {{
+    if (i === SLIDES.length - 1) i = 0;
+    play();
+  }});
+  pauseBtn.addEventListener('click', stop);
+  speedSel.addEventListener('change', () => {{ if (timer) {{ stop(); play(); }} }});
+}})();
+</script>
+"""
+
+
+def state_journey_table(model, rounds, names) -> str:
+    """For every state: USPS, name, eliminated-round (or 'survived'), top-comment-author-ish, final empire."""
+    elim_round_of = {}
+    for r in rounds:
+        if r["eliminated_state"]:
+            elim_round_of[r["eliminated_state"]] = r
+    rows = []
+    for usps in sorted(model["states_in_play"], key=lambda u: STATES[u]["name"]):
+        st = STATES[usps]
+        elim_event = elim_round_of.get(usps)
+        if elim_event:
+            elim_html = (f'<td class="num">#{elim_event["round"]:02d}</td>'
+                         f'<td><a href="history.html#round-{elim_event["round"]}">post</a></td>')
+            note = elim_event.get("note", "")
+        else:
+            elim_html = '<td class="num"><span class="root-badge">root</span></td><td>—</td>'
+            note = "Survived as an empire root."
+        final_root = model["final_root_of"][usps]
+        emp = display_name_of(final_root, names)
+        emp_self = " (self)" if final_root == usps else ""
+        rows.append(f"""<tr>
+          <td>{st['usps']}</td>
+          <td>{st['name']}</td>
+          <td class="num">{st['population']:,}</td>
+          {elim_html}
+          <td>{emp}{emp_self}</td>
+          <td class="note">{note}</td>
+        </tr>""")
+    return ('<table id="journey"><thead><tr>'
+            '<th>USPS</th><th>State</th><th class="num">2020 pop</th>'
+            '<th class="num">Round eliminated</th><th>Source</th>'
+            '<th>Final empire</th><th>Note</th>'
+            '</tr></thead><tbody>' + "".join(rows) + "</tbody></table>")
+
+
+def treemap_chart(model, names) -> str:
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+    empire_color = {r: PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i, r in enumerate(final_roots)}
+
+    labels = ["NewMerica"]
+    parents = [""]
+    values = [0]
+    colors = ["#0f1115"]
+    for root in final_roots:
+        emp_name = display_name_of(root, names)
+        labels.append(emp_name)
+        parents.append("NewMerica")
+        values.append(0)
+        colors.append(empire_color[root])
+        for m in sorted(final[root]["members"], key=lambda s: -STATES[s]["population"]):
+            labels.append(STATES[m]["name"])
+            parents.append(emp_name)
+            values.append(STATES[m]["population"])
+            colors.append(empire_color[root])
+
+    fig = go.Figure(go.Treemap(
+        labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(width=1, color="#0f1115")),
+        branchvalues="total",
+        textinfo="label+value+percent parent",
+        hovertemplate="<b>%{label}</b><br>%{value:,}<extra></extra>",
+    ))
+    fig.update_layout(
+        title="Treemap — population of each surviving empire, broken down by state",
+        template="plotly_dark", paper_bgcolor="#161a22",
+        height=620, margin=dict(l=10, r=10, t=60, b=10),
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="treemap")
+
+
 # ============================================================
 # Page 1: Overview (index.html)
 # ============================================================
@@ -173,15 +338,32 @@ def build_index(model, rounds, names, image_rel) -> str:
                       'style="width:100%;max-width:900px;border-radius:8px;border:1px solid #2a2f3a;display:block;margin:16px auto;"/>'
                       if final_map else "")
 
+    # Sample-points overlay (verification image)
+    overlay_path = DOCS_MAPS / "round_42_overlay.png"
+    overlay_html = ""
+    if overlay_path.exists():
+        overlay_html = """
+<h2>Sample-point overlay — image-based ground truth</h2>
+<p class="note">Each red dot marks the pixel where we sampled the round-42 image to determine that state's final empire (via nearest empire-color anchor). This is the "image ground truth" that drives the merger-tree composition below: each state is assigned to the empire whose color it visually sits in on the OP's final map.</p>
+<img src="assets/maps/round_42_overlay.png" alt="state sample-point overlay" style="width:100%;max-width:1000px;border-radius:8px;border:1px solid #2a2f3a;display:block;margin:16px auto;"/>
+"""
+
     header = f"""
     <h1>NewMericaMeme</h1>
     <p class="lede">A data report on the r/geographymemes voting series <em>"Top comment deletes a US State"</em>.
-      After 42 rounds and 41 absorptions, <strong>{n} empires</strong> remain — built from 50 states.
-      Use the nav above to dig into the round-by-round history, multi-metric pivots, and source data.</p>
+      After 42 rounds and 41 absorptions, <strong>{n} empires</strong> remain — built from 50 states.</p>
+    <details class="rules"><summary>How the game worked</summary>
+      <p>Each round, the OP posted a US map showing the current empires. Whoever's comment got the most upvotes
+      chose a state to delete — that state was absorbed into one or more neighboring empires (with the OP picking
+      how to slice it if multiple empires were named). After 42 rounds, every state but the surviving 9 had been
+      absorbed into one of those 9 empires. Use the nav above to dig into the round-by-round history, multi-metric
+      pivots, and source data.</p>
+    </details>
     """
 
     body = f"""
 {final_map_html}
+{overlay_html}
 
 <h2>Surviving empires — final ranking</h2>
 {table}
@@ -433,13 +615,16 @@ def animated_map_chart(model, names) -> str:
     return fig.to_html(full_html=False, include_plotlyjs=False, div_id="animap")
 
 
-def build_pivots(model, rounds, names) -> str:
+def build_pivots(model, rounds, names, image_rel) -> str:
     final = model["final"]
     final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
 
     sankey = sankey_chart(model, names)
     chord = chord_like_chart(model, names)
     animap = animated_map_chart(model, names)
+    slider = image_slider(rounds, image_rel)
+    treemap = treemap_chart(model, names)
+    journey = state_journey_table(model, rounds, names)
 
     # Per-metric tabs
     tab_btns = []
@@ -511,20 +696,32 @@ def build_pivots(model, rounds, names) -> str:
     """
 
     body = f"""
+<h2>Map slider — actual round maps</h2>
+<p class="note">The OP's actual map at each round. Mid-state splits the OP drew (e.g., Hawaii eating part of SoCal, Cascadia extending into Jefferson) are preserved here exactly, unlike the schematic choropleth below.</p>
+<div class="chart-block">{slider}</div>
+
 <h2>Sankey — 50 states → 9 empires</h2>
 <div class="chart-block">{sankey}</div>
+
+<h2>Treemap — empires by population, broken down by state</h2>
+<div class="chart-block">{treemap}</div>
 
 <h2>Round-by-round transfers</h2>
 <p class="note">Each bar is one round's eliminated state; bar height = its population; color = the final empire that the eliminated state eventually ended up in (after possible chained absorptions).</p>
 <div class="chart-block">{chord}</div>
 
-<h2>Animated map</h2>
-<p class="note">Each state is colored by its current empire owner. Use the slider or ▶ Play to scrub through rounds. <em>Note:</em> This uses Plotly's USA-states basemap and assigns each whole state to its current empire — splits the OP drew mid-state are not shown here (see the area-share chart below for that discrepancy).</p>
+<h2>Animated choropleth — whole-state model</h2>
+<p class="note">Schematic version: each whole state is colored by its current empire. Splits the OP drew mid-state are <em>not</em> shown here (use the actual-map slider above for that fidelity).</p>
 <div class="chart-block">{animap}</div>
 
 <h2>Per-metric breakdowns</h2>
 <p class="note">Sums where appropriate (population, GDP, land area), otherwise population-weighted means. Click a category.</p>
 {tabs_html}
+
+<h2>State journey table</h2>
+<p class="note">Type to filter by state name, USPS code, or final empire.</p>
+<input type="text" id="journey-filter" placeholder="Filter states (e.g. 'tex', 'NM', 'cascadia')..." class="filter-input"/>
+{journey}
 
 <h2>Splits sanity check — model vs. image</h2>
 <p class="note">The whole-state model assigns each absorbed state to one empire. In reality the round-42 map shows states <strong>split</strong> between empires (e.g., California sliced between New Mexico, Hawaii, Cascadia, and Colorado). Below: each empire's share of the colored map by model vs. by pixel-counting the actual round-42 image.</p>
@@ -540,6 +737,19 @@ document.querySelectorAll('.tab-btn').forEach(btn => {{
     window.dispatchEvent(new Event('resize'));
   }});
 }});
+
+// Journey table filter
+(() => {{
+  const inp = document.getElementById('journey-filter');
+  const table = document.getElementById('journey');
+  if (!inp || !table) return;
+  inp.addEventListener('input', () => {{
+    const q = inp.value.trim().toLowerCase();
+    table.querySelectorAll('tbody tr').forEach(tr => {{
+      tr.style.display = !q || tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+    }});
+  }});
+}})();
 </script>
 """
     return page("pivots.html", "Pivots", header, body)
@@ -612,7 +822,7 @@ def main() -> int:
     pages = {
         "index.html":   build_index(model, rounds, names, image_rel),
         "history.html": build_history(model, rounds, names, image_rel),
-        "pivots.html":  build_pivots(model, rounds, names),
+        "pivots.html":  build_pivots(model, rounds, names, image_rel),
         "sources.html": build_sources(),
     }
     for name, html in pages.items():
