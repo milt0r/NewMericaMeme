@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NewMericaMeme — data report</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0f1115; color: #e6e8ec; }
+header { padding: 48px 24px 24px; max-width: 1100px; margin: 0 auto; }
+h1 { font-size: 2.4rem; margin: 0 0 8px; }
+h2 { border-bottom: 1px solid #2a2f3a; padding-bottom: 8px; margin-top: 56px; }
+h3 { margin: 0 0 4px; font-size: 1.15rem; }
+.lede { color: #a9b0bd; font-size: 1.05rem; max-width: 700px; }
+main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+.empire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.empire-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 16px; }
+.empire-card .root-pop { font-size: .75rem; color: #7a8294; font-weight: normal; margin-left: 6px; }
+.empire-meta { color: #8b93a7; font-size: .85rem; margin: 0 0 8px; }
+.absorb-list { padding-left: 18px; margin: 0; font-size: .92rem; }
+.absorb-list li { margin: 3px 0; }
+.absorb-list ul { padding-left: 18px; margin: 3px 0; border-left: 2px solid #2a3142; }
+.root-list { padding-left: 0; list-style: none; }
+.root-list > li { font-weight: 600; }
+.root-badge { background: #3a4a66; color: #d6e0f5; padding: 1px 6px; border-radius: 4px; font-size: .7rem; margin-right: 6px; text-transform: uppercase; letter-spacing: .03em; }
+.round-badge { background: #2a3142; color: #c6cfe2; padding: 1px 6px; border-radius: 4px; font-size: .75rem; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.pop { color: #7a8294; font-size: .8rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .92rem; }
+th, td { border-bottom: 1px solid #232a36; padding: 8px 6px; text-align: left; vertical-align: top; }
+th { background: #1a1f29; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.thumb { width: 120px; height: auto; border-radius: 4px; border: 1px solid #2a2f3a; display: block; }
+.thumb-link { display: inline-block; }
+.note { font-size: .8rem; color: #8b93a7; }
+.source-pill { display: inline-block; font-size: .7rem; padding: 1px 6px; border-radius: 999px; background: #243044; color: #a8b6cf; margin-left: 6px; }
+footer { color: #7a8294; font-size: .8rem; margin-top: 60px; border-top: 1px solid #232a36; padding-top: 16px; }
+footer ul { padding-left: 18px; }
+.chart-block { margin: 24px 0 48px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
+a { color: #6cb1ff; }
+</style>
+</head><body>
+
+<header>
+  <h1>NewMericaMeme</h1>
+  <p class="lede">A data report on the r/geographymemes voting series <em>"Top comment deletes a US State"</em>.
+    After 42 rounds and 41 absorptions, 9 empires remain. This report shows the merger trees,
+    cumulative population/GDP timelines, final rankings, a round-by-round ledger of every state that fell,
+    and an image-based check on the splits the OP drew between empires.
+  </p>
+  <p class="note">Posts for rounds <strong>#2–#5, #13, #18, #24, #25, #29, #30, #31</strong> are no longer on Reddit (likely deleted — post #41 mentions re-uploads). Eliminations for those rounds were deduced from each surrounding post's top comment and OP's running removal lists; the three states with no signal at all (rounds 25, 30, 31) had to be Iowa, Georgia, and Nevada because those were the only states unaccounted for at the end.</p>
+</header>
+
+<main>
+
+<h2>Surviving empires</h2>
+<div class="empire-grid">
+    <div class="empire-card">
+      <h3>New Mexico (Gulf of New Mexico)</h3>
+      <p class="empire-meta">8 states · pop 111,069,328</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> New Mexico <span class="pop">(self 2,117,522; subtree 111,069,328 across 8 states)</span><ul class='absorb-list'><li><span class="round-badge">#2</span> Texas <span class="pop">(29,145,505)</span></li><li><span class="round-badge">#3</span> Florida <span class="pop">(21,538,187)</span></li><li><span class="round-badge">#19</span> Oklahoma <span class="pop">(3,959,353)</span></li><li><span class="round-badge">#27</span> Louisiana <span class="pop">(self 4,657,757; subtree 7,619,036 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#16</span> Mississippi <span class="pop">(2,961,279)</span></li></ul></li><li><span class="round-badge">#33</span> Arizona <span class="pop">(7,151,502)</span></li><li><span class="round-badge">#40</span> California <span class="pop">(39,538,223)</span></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Great Maryland Empire</h3>
+      <p class="empire-meta">13 states · pop 91,890,633</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Maryland <span class="pop">(self 6,177,224; subtree 91,890,633 across 13 states)</span><ul class='absorb-list'><li><span class="round-badge">#20</span> Delaware <span class="pop">(989,948)</span></li><li><span class="round-badge">#30</span> Georgia <span class="pop">(self 10,711,908; subtree 15,830,333 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#8</span> South Carolina <span class="pop">(5,118,425)</span></li></ul></li><li><span class="round-badge">#32</span> North Carolina <span class="pop">(10,439,388)</span></li><li><span class="round-badge">#34</span> Virginia <span class="pop">(self 8,631,393; subtree 10,425,109 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#6</span> West Virginia <span class="pop">(1,793,716)</span></li></ul></li><li><span class="round-badge">#42</span> Pennsylvania <span class="pop">(self 13,002,700; subtree 48,028,631 across 6 states)</span><ul class='absorb-list'><li><span class="round-badge">#10</span> Ohio <span class="pop">(11,799,448)</span></li><li><span class="round-badge">#17</span> Indiana <span class="pop">(6,785,528)</span></li><li><span class="round-badge">#26</span> Kentucky <span class="pop">(4,505,836)</span></li><li><span class="round-badge">#28</span> Tennessee <span class="pop">(self 6,910,840; subtree 11,935,119 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#14</span> Alabama <span class="pop">(5,024,279)</span></li></ul></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>The Vermomster</h3>
+      <p class="empire-meta">8 states · pop 44,606,448</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Vermont <span class="pop">(self 643,077; subtree 44,606,448 across 8 states)</span><ul class='absorb-list'><li><span class="round-badge">#18</span> New Hampshire <span class="pop">(1,377,529)</span></li><li><span class="round-badge">#29</span> Maine <span class="pop">(1,362,359)</span></li><li><span class="round-badge">#35</span> New York <span class="pop">(self 20,201,249; subtree 29,490,243 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#13</span> New Jersey <span class="pop">(9,288,994)</span></li></ul></li><li><span class="round-badge">#37</span> Massachusetts <span class="pop">(self 7,029,917; subtree 11,733,240 across 3 states)</span><ul class='absorb-list'><li><span class="round-badge">#11</span> Rhode Island <span class="pop">(1,097,379)</span></li><li><span class="round-badge">#23</span> Connecticut <span class="pop">(3,605,944)</span></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Michigan</h3>
+      <p class="empire-meta">4 states · pop 32,056,276</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Michigan <span class="pop">(self 10,077,331; subtree 32,056,276 across 4 states)</span><ul class='absorb-list'><li><span class="round-badge">#41</span> Illinois <span class="pop">(self 12,812,508; subtree 21,978,945 across 3 states)</span><ul class='absorb-list'><li><span class="round-badge">#15</span> Missouri <span class="pop">(self 6,154,913; subtree 9,166,437 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#9</span> Arkansas <span class="pop">(3,011,524)</span></li></ul></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Colorado</h3>
+      <p class="empire-meta">5 states · pop 15,664,675</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Colorado <span class="pop">(self 5,773,714; subtree 15,664,675 across 5 states)</span><ul class='absorb-list'><li><span class="round-badge">#22</span> Utah <span class="pop">(3,271,616)</span></li><li><span class="round-badge">#24</span> Wyoming <span class="pop">(576,851)</span></li><li><span class="round-badge">#31</span> Nevada <span class="pop">(3,104,614)</span></li><li><span class="round-badge">#38</span> Kansas <span class="pop">(2,937,880)</span></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Cascadia</h3>
+      <p class="empire-meta">3 states · pop 13,781,643</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Oregon <span class="pop">(self 4,237,256; subtree 13,781,643 across 3 states)</span><ul class='absorb-list'><li><span class="round-badge">#4</span> Idaho <span class="pop">(1,839,106)</span></li><li><span class="round-badge">#36</span> Washington <span class="pop">(7,705,281)</span></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Minnesota</h3>
+      <p class="empire-meta">6 states · pop 13,608,353</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Minnesota <span class="pop">(self 5,706,494; subtree 13,608,353 across 6 states)</span><ul class='absorb-list'><li><span class="round-badge">#5</span> South Dakota <span class="pop">(886,667)</span></li><li><span class="round-badge">#25</span> Iowa <span class="pop">(self 3,190,369; subtree 5,151,873 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#7</span> Nebraska <span class="pop">(1,961,504)</span></li></ul></li><li><span class="round-badge">#39</span> Montana <span class="pop">(self 1,084,225; subtree 1,863,319 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#12</span> North Dakota <span class="pop">(779,094)</span></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Wisconsin</h3>
+      <p class="empire-meta">1 states · pop 5,893,718</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Wisconsin <span class="pop">(5,893,718)</span></li></ul>
+    </div>
+    
+    <div class="empire-card">
+      <h3>Hawaii</h3>
+      <p class="empire-meta">2 states · pop 2,188,662</p>
+      <ul class='absorb-list root-list'><li><span class="root-badge">root</span> Hawaii <span class="pop">(self 1,455,271; subtree 2,188,662 across 2 states)</span><ul class='absorb-list'><li><span class="round-badge">#21</span> Alaska <span class="pop">(733,391)</span></li></ul></li></ul>
+    </div>
+    </div>
+
+<h2>Cumulative empire metrics over rounds</h2>
+<p class="note">Each line is one of the 9 surviving empires. The value at round R = sum of that empire's
+current members at round R. As a state is absorbed into an empire, its metric joins that empire's line.</p>
+<div class="chart-block"><div>                            <div id="chart-population" class="plotly-graph-div" style="height:460px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("chart-population")) {                    Plotly.newPlot(                        "chart-population",                        [{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#1f77b4","width":2},"mode":"lines+markers","name":"New Mexico (Gulf of New Mexico)","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[2117522,31263027,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,52801214,56760567,56760567,56760567,56760567,56760567,56760567,56760567,56760567,64379603,64379603,64379603,64379603,64379603,64379603,71531105,71531105,71531105,71531105,71531105,71531105,71531105,111069328,111069328,111069328],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#ff7f0e","width":2},"mode":"lines+markers","name":"Great Maryland Empire","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,6177224,7167172,7167172,7167172,7167172,7167172,7167172,7167172,7167172,7167172,7167172,22997505,22997505,33436893,33436893,43862002,43862002,43862002,43862002,43862002,43862002,43862002,43862002,91890633],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#2ca02c","width":2},"mode":"lines+markers","name":"The Vermomster","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,643077,2020606,2020606,2020606,2020606,2020606,2020606,2020606,2020606,2020606,2020606,2020606,3382965,3382965,3382965,3382965,3382965,3382965,32873208,32873208,44606448,44606448,44606448,44606448,44606448,44606448],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#d62728","width":2},"mode":"lines+markers","name":"Michigan","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,10077331,32056276,32056276],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#9467bd","width":2},"mode":"lines+markers","name":"Colorado","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,5773714,9045330,9045330,9622181,9622181,9622181,9622181,9622181,9622181,9622181,12726795,12726795,12726795,12726795,12726795,12726795,12726795,15664675,15664675,15664675,15664675,15664675],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#8c564b","width":2},"mode":"lines+markers","name":"Cascadia","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[4237256,4237256,4237256,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,6076362,13781643,13781643,13781643,13781643,13781643,13781643,13781643],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#e377c2","width":2},"mode":"lines+markers","name":"Minnesota","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[5706494,5706494,5706494,5706494,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,6593161,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,11745034,13608353,13608353,13608353,13608353],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#7f7f7f","width":2},"mode":"lines+markers","name":"Wisconsin","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718,5893718],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#bcbd22","width":2},"mode":"lines+markers","name":"Hawaii","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,1455271,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662,2188662],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":40},"legend":{"orientation":"h","y":-0.18},"title":{"text":"Cumulative empire population over rounds"},"xaxis":{"title":{"text":"Round"}},"yaxis":{"title":{"text":"Population"}},"height":460},                        {"responsive": true}                    )                };            </script>        </div></div>
+<div class="chart-block"><div>                            <div id="chart-gdp_million_usd" class="plotly-graph-div" style="height:460px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("chart-gdp_million_usd")) {                    Plotly.newPlot(                        "chart-gdp_million_usd",                        [{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#1f77b4","width":2},"mode":"lines+markers","name":"New Mexico (Gulf of New Mexico)","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[131877,2791982,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4439721,4694927,4694927,4694927,4694927,4694927,4694927,4694927,4694927,5157731,5157731,5157731,5157731,5157731,5157731,5695700,5695700,5695700,5695700,5695700,5695700,5695700,9593314,9593314,9593314],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#ff7f0e","width":2},"mode":"lines+markers","name":"Great Maryland Empire","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,522017,613135,613135,613135,613135,613135,613135,613135,613135,613135,613135,1780794,1780794,2608877,2608877,3407993,3407993,3407993,3407993,3407993,3407993,3407993,3407993,6831135],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#2ca02c","width":2},"mode":"lines+markers","name":"The Vermomster","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,42819,163126,163126,163126,163126,163126,163126,163126,163126,163126,163126,163126,249051,249051,249051,249051,249051,249051,3382342,3382342,4541136,4541136,4541136,4541136,4541136,4541136],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#d62728","width":2},"mode":"lines+markers","name":"Michigan","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,679436,2411212,2411212],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#9467bd","width":2},"mode":"lines+markers","name":"Colorado","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,528090,792560,792560,845626,845626,845626,845626,845626,845626,845626,1090455,1090455,1090455,1090455,1090455,1090455,1090455,1327977,1327977,1327977,1327977,1327977],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#8c564b","width":2},"mode":"lines+markers","name":"Cascadia","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[315098,315098,315098,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,440001,1259052,1259052,1259052,1259052,1259052,1259052,1259052],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#e377c2","width":2},"mode":"lines+markers","name":"Minnesota","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[494569,494569,494569,494569,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,574744,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1006570,1160729,1160729,1160729,1160729],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#7f7f7f","width":2},"mode":"lines+markers","name":"Wisconsin","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049,428049],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#bcbd22","width":2},"mode":"lines+markers","name":"Hawaii","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,104077,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647,173647],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":40},"legend":{"orientation":"h","y":-0.18},"title":{"text":"Cumulative empire GDP over rounds"},"xaxis":{"title":{"text":"Round"}},"yaxis":{"title":{"text":"GDP (millions USD)"}},"height":460},                        {"responsive": true}                    )                };            </script>        </div></div>
+<div class="chart-block"><div>                            <div id="chart-land_area_sq_mi" class="plotly-graph-div" style="height:460px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("chart-land_area_sq_mi")) {                    Plotly.newPlot(                        "chart-land_area_sq_mi",                        [{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#1f77b4","width":2},"mode":"lines+markers","name":"New Mexico (Gulf of New Mexico)","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[121298,382530,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,436154,504749,504749,504749,504749,504749,504749,504749,504749,594876,594876,594876,594876,594876,594876,708470,708470,708470,708470,708470,708470,708470,864249,864249,864249],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#ff7f0e","width":2},"mode":"lines+markers","name":"Great Maryland Empire","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,9707,11656,11656,11656,11656,11656,11656,11656,11656,11656,11656,99230,99230,147848,147848,211376,211376,211376,211376,211376,211376,211376,211376,464172],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#2ca02c","width":2},"mode":"lines+markers","name":"The Vermomster","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,9217,18170,18170,18170,18170,18170,18170,18170,18170,18170,18170,18170,49013,49013,49013,49013,49013,49013,103493,103493,117169,117169,117169,117169,117169,117169],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#d62728","width":2},"mode":"lines+markers","name":"Michigan","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,56539,232835,232835],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#9467bd","width":2},"mode":"lines+markers","name":"Colorado","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,103642,185812,185812,282905,282905,282905,282905,282905,282905,282905,392686,392686,392686,392686,392686,392686,392686,474445,474445,474445,474445,474445],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#8c564b","width":2},"mode":"lines+markers","name":"Cascadia","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[95988,95988,95988,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,178631,245087,245087,245087,245087,245087,245087,245087],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#e377c2","width":2},"mode":"lines+markers","name":"Minnesota","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[79627,79627,79627,79627,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,155438,288119,288119,288119,288119,288119,288119,288119,288119,288119,288119,288119,288119,288119,288119,502666,502666,502666,502666],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#7f7f7f","width":2},"mode":"lines+markers","name":"Wisconsin","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158,54158],"type":"scatter"},{"hovertemplate":"Round %{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e%{fullData.name}\u003c\u002fextra\u003e","line":{"color":"#bcbd22","width":2},"mode":"lines+markers","name":"Hawaii","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42],"y":[6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,6423,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064,577064],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":40},"legend":{"orientation":"h","y":-0.18},"title":{"text":"Cumulative empire land area over rounds"},"xaxis":{"title":{"text":"Round"}},"yaxis":{"title":{"text":"Land area (sq mi)"}},"height":460},                        {"responsive": true}                    )                };            </script>        </div></div>
+
+<h2>Final empire rankings</h2>
+<div class="metric-grid">
+  <div class="chart-block"><div>                            <div id="bar-population" class="plotly-graph-div" style="height:420px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("bar-population")) {                    Plotly.newPlot(                        "bar-population",                        [{"hovertemplate":"%{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22"]},"text":["111,069,328","91,890,633","44,606,448","32,056,276","15,664,675","13,781,643","13,608,353","5,893,718","2,188,662"],"textposition":"outside","x":["New Mexico (Gulf of New Mexico)","Great Maryland Empire","The Vermomster","Michigan","Colorado","Cascadia","Minnesota","Wisconsin","Hawaii"],"y":[111069328,91890633,44606448,32056276,15664675,13781643,13608353,5893718,2188662],"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":80},"title":{"text":"Final empire population"},"yaxis":{"title":{"text":"Population"}},"height":420,"showlegend":false},                        {"responsive": true}                    )                };            </script>        </div></div>
+  <div class="chart-block"><div>                            <div id="bar-gdp_million_usd" class="plotly-graph-div" style="height:420px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("bar-gdp_million_usd")) {                    Plotly.newPlot(                        "bar-gdp_million_usd",                        [{"hovertemplate":"%{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22"]},"text":["9,593,314","6,831,135","4,541,136","2,411,212","1,327,977","1,259,052","1,160,729","428,049","173,647"],"textposition":"outside","x":["New Mexico (Gulf of New Mexico)","Great Maryland Empire","The Vermomster","Michigan","Colorado","Cascadia","Minnesota","Wisconsin","Hawaii"],"y":[9593314,6831135,4541136,2411212,1327977,1259052,1160729,428049,173647],"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":80},"title":{"text":"Final empire GDP (USD millions)"},"yaxis":{"title":{"text":"GDP"}},"height":420,"showlegend":false},                        {"responsive": true}                    )                };            </script>        </div></div>
+</div>
+<div class="chart-block"><div>                            <div id="bar-land_area_sq_mi" class="plotly-graph-div" style="height:420px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("bar-land_area_sq_mi")) {                    Plotly.newPlot(                        "bar-land_area_sq_mi",                        [{"hovertemplate":"%{x}\u003cbr\u003e%{y:,.0f}\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22"]},"text":["864,249","577,064","502,666","474,445","464,172","245,087","232,835","117,169","54,158"],"textposition":"outside","x":["New Mexico (Gulf of New Mexico)","Hawaii","Minnesota","Colorado","Great Maryland Empire","Cascadia","Michigan","The Vermomster","Wisconsin"],"y":[864249,577064,502666,474445,464172,245087,232835,117169,54158],"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":60,"b":80},"title":{"text":"Final empire land area (sq mi)"},"yaxis":{"title":{"text":"Land area"}},"height":420,"showlegend":false},                        {"responsive": true}                    )                };            </script>        </div></div>
+<div class="chart-block"><div>                            <div id="chart-scatter" class="plotly-graph-div" style="height:480px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("chart-scatter")) {                    Plotly.newPlot(                        "chart-scatter",                        [{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 111,069,328\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#1f77b4","line":{"color":"white","width":1},"size":87.31396970258228},"mode":"markers+text","name":"New Mexico (Gulf of New Mexico)","text":["New Mexico (Gulf of New Mexico)"],"textposition":"top center","x":[86372.3061329767],"y":[33.46368449892845],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 91,890,633\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#ff7f0e","line":{"color":"white","width":1},"size":77.92736529622408},"mode":"markers+text","name":"Great Maryland Empire","text":["Great Maryland Empire"],"textposition":"top center","x":[74339.84049277363],"y":[33.842885745492694],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 44,606,448\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#2ca02c","line":{"color":"white","width":1},"size":50.50865831329317},"mode":"markers+text","name":"The Vermomster","text":["The Vermomster"],"textposition":"top center","x":[101804.47454592214],"y":[41.93220120552975],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 32,056,276\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#d62728","line":{"color":"white","width":1},"size":41.426199122728626},"mode":"markers+text","name":"Michigan","text":["Michigan"],"textposition":"top center","x":[75218.09457842202],"y":[33.385498658671395],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 15,664,675\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#9467bd","line":{"color":"white","width":1},"size":26.957528963144682},"mode":"markers+text","name":"Colorado","text":["Colorado"],"textposition":"top center","x":[84775.26664294025],"y":[38.06065560887794],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 13,781,643\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#8c564b","line":{"color":"white","width":1},"size":24.963636184049754},"mode":"markers+text","name":"Cascadia","text":["Cascadia"],"textposition":"top center","x":[91357.17707968492],"y":[38.34591353149984],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 13,608,353\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#e377c2","line":{"color":"white","width":1},"size":24.774824514472584},"mode":"markers+text","name":"Minnesota","text":["Minnesota"],"textposition":"top center","x":[85295.33294734491],"y":[35.178400560302926],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 5,893,718\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#7f7f7f","line":{"color":"white","width":1},"size":15},"mode":"markers+text","name":"Wisconsin","text":["Wisconsin"],"textposition":"top center","x":[72628.00833022551],"y":[32.7],"type":"scatter"},{"hovertemplate":"\u003cb\u003e%{fullData.name}\u003c\u002fb\u003e\u003cbr\u003eGDP\u002fcapita: $%{x:,.0f}\u003cbr\u003eBachelor's+: %{y:.1f}%\u003cbr\u003ePopulation: 2,188,662\u003cextra\u003e\u003c\u002fextra\u003e","marker":{"color":"#bcbd22","line":{"color":"white","width":1},"size":15},"mode":"markers+text","name":"Hawaii","text":["Hawaii"],"textposition":"top center","x":[79339.34065652896],"y":[34.05965416313711],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":60,"r":20,"t":60,"b":50},"title":{"text":"Final empires: GDP per capita vs. Bachelor's-or-higher % (bubble = population)"},"xaxis":{"title":{"text":"GDP per capita (USD, 2023)"}},"yaxis":{"title":{"text":"Bachelor's degree or higher % (ACS 2022)"}},"height":480,"showlegend":false},                        {"responsive": true}                    )                };            </script>        </div></div>
+
+<h2>Final empires — metrics table</h2>
+<table><thead><tr><th>Empire</th><th class='num'>States</th><th class='num'>Population</th><th class='num'>Land area (mi²)</th><th class='num'>Water %</th><th class='num'>GDP</th><th class='num'>GDP / capita</th><th class='num'>Median HH income</th><th class='num'>Bachelor's+ %</th></tr></thead><tbody>
+          <tr>
+            <td><strong>New Mexico (Gulf of New Mexico)</strong><br><span class="note">root: New Mexico</span></td>
+            <td class="num">8</td>
+            <td class="num">111,069,328</td>
+            <td class="num">864,249</td>
+            <td class="num">4.3%</td>
+            <td class="num">$9,593,314M</td>
+            <td class="num">$86,372</td>
+            <td class="num">$77,612</td>
+            <td class="num">33.5%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Great Maryland Empire</strong><br><span class="note">root: Maryland</span></td>
+            <td class="num">13</td>
+            <td class="num">91,890,633</td>
+            <td class="num">464,172</td>
+            <td class="num">5.1%</td>
+            <td class="num">$6,831,135M</td>
+            <td class="num">$74,340</td>
+            <td class="num">$72,829</td>
+            <td class="num">33.8%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>The Vermomster</strong><br><span class="note">root: Vermont</span></td>
+            <td class="num">8</td>
+            <td class="num">44,606,448</td>
+            <td class="num">117,169</td>
+            <td class="num">13.3%</td>
+            <td class="num">$4,541,136M</td>
+            <td class="num">$101,804</td>
+            <td class="num">$89,959</td>
+            <td class="num">41.9%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Michigan</strong><br><span class="note">root: Michigan</span></td>
+            <td class="num">4</td>
+            <td class="num">32,056,276</td>
+            <td class="num">232,835</td>
+            <td class="num">16.1%</td>
+            <td class="num">$2,411,212M</td>
+            <td class="num">$75,218</td>
+            <td class="num">$71,665</td>
+            <td class="num">33.4%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Colorado</strong><br><span class="note">root: Colorado</span></td>
+            <td class="num">5</td>
+            <td class="num">15,664,675</td>
+            <td class="num">474,445</td>
+            <td class="num">1.1%</td>
+            <td class="num">$1,327,977M</td>
+            <td class="num">$84,775</td>
+            <td class="num">$81,795</td>
+            <td class="num">38.1%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Cascadia</strong><br><span class="note">root: Oregon</span></td>
+            <td class="num">3</td>
+            <td class="num">13,781,643</td>
+            <td class="num">245,087</td>
+            <td class="num">3.2%</td>
+            <td class="num">$1,259,052M</td>
+            <td class="num">$91,357</td>
+            <td class="num">$84,777</td>
+            <td class="num">38.3%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Minnesota</strong><br><span class="note">root: Minnesota</span></td>
+            <td class="num">6</td>
+            <td class="num">13,608,353</td>
+            <td class="num">502,666</td>
+            <td class="num">2.5%</td>
+            <td class="num">$1,160,729M</td>
+            <td class="num">$85,295</td>
+            <td class="num">$76,874</td>
+            <td class="num">35.2%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Wisconsin</strong><br><span class="note">root: Wisconsin</span></td>
+            <td class="num">1</td>
+            <td class="num">5,893,718</td>
+            <td class="num">54,158</td>
+            <td class="num">14.7%</td>
+            <td class="num">$428,049M</td>
+            <td class="num">$72,628</td>
+            <td class="num">$72,458</td>
+            <td class="num">32.7%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>Hawaii</strong><br><span class="note">root: Hawaii</span></td>
+            <td class="num">2</td>
+            <td class="num">2,188,662</td>
+            <td class="num">577,064</td>
+            <td class="num">14.2%</td>
+            <td class="num">$173,647M</td>
+            <td class="num">$79,339</td>
+            <td class="num">$92,072</td>
+            <td class="num">34.1%</td>
+          </tr>
+        </tbody></table>
+
+<h2>Splits sanity check — model vs. image</h2>
+<p class="note">The whole-state attribution above treats each absorbed state as one indivisible unit assigned to a single empire. In reality the meme's round-42 map shows states <strong>split</strong> between empires (e.g. California sliced between New Mexico, Hawaii, Cascadia, and Colorado; Texas mostly going to New Mexico). The bars below compare each empire's share of the colored map by whole-state model vs. by pixel-counting the round-42 image. Large gaps highlight where image-based attribution would refine the population/GDP estimates above.</p>
+<p class="note"><em>Caveats:</em> Hawaii's apparent share is understated because Alaska's enormous real-world area is shown in a small inset; Wisconsin/Minnesota/Michigan all use very similar greens on this palette and may be partially misclassified between each other.</p>
+<div class="chart-block"><div>                            <div id="chart-area-compare" class="plotly-graph-div" style="height:460px; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("chart-area-compare")) {                    Plotly.newPlot(                        "chart-area-compare",                        [{"marker":{"color":"#6cb1ff"},"name":"Whole-state model %","text":["24.5%","16.3%","14.2%","13.4%","13.1%","6.9%","6.6%","3.3%","1.5%"],"textposition":"outside","x":["New Mexico (Gulf of New Mexico)","Hawaii","Minnesota","Colorado","Great Maryland Empire","Cascadia","Michigan","The Vermomster","Wisconsin"],"y":[24.470184846730252,16.33888236884688,14.232391285574536,13.43334715991217,13.142479355690865,6.939347564799701,6.5924467240210145,3.3175011927193863,1.5334195017051995],"type":"bar"},{"marker":{"color":"#ffae6c"},"name":"Image-derived %","text":["29.5%","6.2%","14.5%","12.6%","9.6%","16.6%","1.9%","4.9%","4.2%"],"textposition":"outside","x":["New Mexico (Gulf of New Mexico)","Hawaii","Minnesota","Colorado","Great Maryland Empire","Cascadia","Michigan","The Vermomster","Wisconsin"],"y":[29.544967039866066,6.193627707439573,14.46884482578215,12.586324160301348,9.572564612326044,16.55919744689756,1.9456942555195145,4.927670817202051,4.20110913466569],"type":"bar"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"margin":{"l":40,"r":20,"t":70,"b":80},"legend":{"orientation":"h","y":-0.22},"title":{"text":"Area share per empire \u2014 whole-state attribution vs. round-42 image segmentation"},"yaxis":{"title":{"text":"Share of map (%)"}},"barmode":"group","height":460},                        {"responsive": true}                    )                };            </script>        </div></div>
+
+<h2>Round-by-round ledger</h2>
+<p class="note">Round 1 is the kickoff (no elimination). Sources: <code>body</code> = parsed from OP's post body; <code>prev-top</code> = top comment of the previous round; <code>list</code> = OP's running removal list (#20/#21); <code>deduced</code> = only unaccounted state remaining; <code>guess</code> = editorial guess (low confidence).</p>
+<table><thead><tr><th>Round</th><th>Map</th><th>Eliminated → Empire</th><th>OP post</th><th>Top comment (drove next round)</th></tr></thead><tbody>
+          <tr>
+            <td class="num">#01</td>
+            <td><a class="thumb-link" href="assets/maps/round_01_1se3qj2.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_01_1se3qj2.jpeg" alt="round 1 map"/></a></td>
+            <td><strong>—</strong><br><span class="note">→ —<span class="source-pill">kickoff</span></span></td>
+            <td>Top Comment Deletes a US state · <a href="https://www.reddit.com/r/geographymemes/comments/1se3qj2/top_comment_deletes_a_us_state/" target="_blank">post</a><br><span class="note"></span></td>
+            <td><span class="note">Texas</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#02</td>
+            <td><a class="thumb-link" href="assets/maps/round_02_1seslrj.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_02_1seslrj.jpeg" alt="round 2 map"/></a></td>
+            <td><strong>Texas</strong><br><span class="note">→ New Mexico (Gulf of New Mexico)<span class="source-pill">list+prev-top</span></span></td>
+            <td>Top comment Removes a US State #2 · <a href="https://www.reddit.com/r/geographymemes/comments/1seslrj/top_comment_removes_a_us_state_2/" target="_blank">post</a><br><span class="note">Florida has been eaten by Georgia and Alabama</span></td>
+            <td><span class="note">Idaho. Nothing happens in Idaho.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#03</td>
+            <td><a class="thumb-link" href="assets/maps/round_03_1sfm6gc.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_03_1sfm6gc.jpeg" alt="round 3 map"/></a></td>
+            <td><strong>Florida</strong><br><span class="note">→ New Mexico (Gulf of New Mexico)<span class="source-pill">list+guess</span></span></td>
+            <td>Top comment Removes a US State #3 · <a href="https://www.reddit.com/r/geographymemes/comments/1sfm6gc/top_comment_removes_a_us_state_3/" target="_blank">post</a><br><span class="note">Idaho has been eaten by its surrounding neighbours</span></td>
+            <td><span class="note">Texas!</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#04</td>
+            <td><a class="thumb-link" href="assets/maps/round_04_1sgopti.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_04_1sgopti.jpeg" alt="round 4 map"/></a></td>
+            <td><strong>Idaho</strong><br><span class="note">→ Cascadia<span class="source-pill">list+guess</span></span></td>
+            <td>Top comment removes a US State #4 · <a href="https://www.reddit.com/r/geographymemes/comments/1sgopti/top_comment_removes_a_us_state_4/" target="_blank">post</a><br><span class="note">Texas has been eaten by New Mexico, Oklahoma and Louisiana</span></td>
+            <td><span class="note">There should be only one Dakota.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#05</td>
+            <td><a class="thumb-link" href="assets/maps/round_05_1shnsxb.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_05_1shnsxb.jpeg" alt="round 5 map"/></a></td>
+            <td><strong>South Dakota</strong><br><span class="note">→ Minnesota<span class="source-pill">list+guess</span></span></td>
+            <td>Top comment deleted a US state #5 · <a href="https://www.reddit.com/r/geographymemes/comments/1shnsxb/top_comment_deleted_a_us_state_5/" target="_blank">post</a><br><span class="note">South Dakota and North Dakota had a fight to the death with only one coming out victorious, the North.</span></td>
+            <td><span class="note">West Virginia.     Really just to set up so Pennsylvania can officially be Pennsyltucky shortly</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#06</td>
+            <td><a class="thumb-link" href="assets/maps/round_06_1sih0bk.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_06_1sih0bk.jpeg" alt="round 6 map"/></a></td>
+            <td><strong>West Virginia</strong><br><span class="note">→ Virginia<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #6 · <a href="https://www.reddit.com/r/geographymemes/comments/1sih0bk/top_comment_deletes_a_us_state_6/" target="_blank">post</a><br><span class="note">West Virgina has been demolished by Virginia, Kentucky, Ohio, Maryland and Pennsylvania</span></td>
+            <td><span class="note">Nebraska pls</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#07</td>
+            <td><a class="thumb-link" href="assets/maps/round_07_1sjdgbk.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_07_1sjdgbk.jpeg" alt="round 7 map"/></a></td>
+            <td><strong>Nebraska</strong><br><span class="note">→ Iowa<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #7 · <a href="https://www.reddit.com/r/geographymemes/comments/1sjdgbk/top_comment_deletes_a_us_state_7/" target="_blank">post</a><br><span class="note">Nebraska has been eaten by its neighbours</span></td>
+            <td><span class="note">The obvious answer is South Carolina.
+
+
+There cannot be two Dakotas.
+
+
+There cannot be two Virginias.
+
+
+**There cannot be two Carolinas**</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#08</td>
+            <td><a class="thumb-link" href="assets/maps/round_08_1sk94ae.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_08_1sk94ae.jpeg" alt="round 8 map"/></a></td>
+            <td><strong>South Carolina</strong><br><span class="note">→ Georgia<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #8 · <a href="https://www.reddit.com/r/geographymemes/comments/1sk94ae/top_comment_deletes_a_us_state_8/" target="_blank">post</a><br><span class="note">As heavily requested, North Carolina is now gone being eaten by its friends in the South. 
+
+43 states remain</span></td>
+            <td><span class="note">Arkansas doesn’t exist, so might as well delete it.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#09</td>
+            <td><a class="thumb-link" href="assets/maps/round_09_1slbgdo.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_09_1slbgdo.jpeg" alt="round 9 map"/></a></td>
+            <td><strong>Arkansas</strong><br><span class="note">→ Missouri<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #9 · <a href="https://www.reddit.com/r/geographymemes/comments/1slbgdo/top_comment_deletes_a_us_state_9/" target="_blank">post</a><br><span class="note">Arkansas is no more</span></td>
+            <td><span class="note">Obviously Ohio</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#10</td>
+            <td><a class="thumb-link" href="assets/maps/round_10_1sm8pxb.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_10_1sm8pxb.jpeg" alt="round 10 map"/></a></td>
+            <td><strong>Ohio</strong><br><span class="note">→ Pennsylvania<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #10 · <a href="https://www.reddit.com/r/geographymemes/comments/1sm8pxb/top_comment_deletes_a_us_state_10/" target="_blank">post</a><br><span class="note">Ohio is gone (finally) comment which state you would like to see gone next</span></td>
+            <td><span class="note">Mississippi</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#11</td>
+            <td><a class="thumb-link" href="assets/maps/round_11_1sn6jfl.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_11_1sn6jfl.jpeg" alt="round 11 map"/></a></td>
+            <td><strong>Rhode Island</strong><br><span class="note">→ Massachusetts<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #11 · <a href="https://www.reddit.com/r/geographymemes/comments/1sn6jfl/top_comment_deletes_a_us_state_11/" target="_blank">post</a><br><span class="note">Rhode Island is now gone (not that the map looks any different) and I’ve also reverted the NC/SC so that North Carolina is back for the people who were complaining</span></td>
+            <td><span class="note">North Dakota might be big now, but it still doesn't have any reason to exist.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#12</td>
+            <td><a class="thumb-link" href="assets/maps/round_12_1so8cy6.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_12_1so8cy6.jpeg" alt="round 12 map"/></a></td>
+            <td><strong>North Dakota</strong><br><span class="note">→ Montana<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #12 · <a href="https://www.reddit.com/r/geographymemes/comments/1so8cy6/top_comment_deletes_a_us_state_12/" target="_blank">post</a><br><span class="note">North Dakota is gone, sacrificing its landmass to the surrounding states</span></td>
+            <td><span class="note">Why is New Jersey still there?</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#13</td>
+            <td><a class="thumb-link" href="assets/maps/round_13_1sp1rn7.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_13_1sp1rn7.jpeg" alt="round 13 map"/></a></td>
+            <td><strong>New Jersey</strong><br><span class="note">→ New York<span class="source-pill">prev-top+list</span></span></td>
+            <td>Top comment deleted a US State #13 · <a href="https://www.reddit.com/r/geographymemes/comments/1sp1rn7/top_comment_deleted_a_us_state_13/" target="_blank">post</a><br><span class="note">New Jersey is gone</span></td>
+            <td><span class="note">Remove Alabama</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#14</td>
+            <td><a class="thumb-link" href="assets/maps/round_14_1spviob.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_14_1spviob.jpeg" alt="round 14 map"/></a></td>
+            <td><strong>Alabama</strong><br><span class="note">→ Tennessee<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #14 · <a href="https://www.reddit.com/r/geographymemes/comments/1spviob/top_comment_deletes_a_us_state_14/" target="_blank">post</a><br><span class="note">Alabama has now been consumed primarily by Tennessee, turning it into a T shape but Georgia and Mississippi have left it landlocked</span></td>
+            <td><span class="note">Finish what John Brown started and end Missouri!</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#15</td>
+            <td><a class="thumb-link" href="assets/maps/round_15_1squh3w.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_15_1squh3w.jpeg" alt="round 15 map"/></a></td>
+            <td><strong>Missouri</strong><br><span class="note">→ Illinois<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #15 · <a href="https://www.reddit.com/r/geographymemes/comments/1squh3w/top_comment_deletes_a_us_state_15/" target="_blank">post</a><br><span class="note">Missouri is GONE!</span></td>
+            <td><span class="note">There’s no reason for that version of Mississippi to exist. Add it to the Louisiana Dominion</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#16</td>
+            <td><a class="thumb-link" href="assets/maps/round_16_1srqhli.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_16_1srqhli.jpeg" alt="round 16 map"/></a></td>
+            <td><strong>Mississippi</strong><br><span class="note">→ Louisiana<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #16 · <a href="https://www.reddit.com/r/geographymemes/comments/1srqhli/top_comment_deletes_a_us_state_16/" target="_blank">post</a><br><span class="note">Mississippi has been eaten by Louisiana and Georgia, Tennessee is still landlocked.</span></td>
+            <td><span class="note">Indiana. 
+
+It’s blocking the unification of Pennsyltucky. This is unnatural and unacceptable.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#17</td>
+            <td><a class="thumb-link" href="assets/maps/round_17_1sspid4.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_17_1sspid4.jpeg" alt="round 17 map"/></a></td>
+            <td><strong>Indiana</strong><br><span class="note">→ Ohio<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #17 · <a href="https://www.reddit.com/r/geographymemes/comments/1sspid4/top_comment_deletes_a_us_state_17/" target="_blank">post</a><br><span class="note">Indiana is now gone and the map has had a freshen up, brighter colours, new text, state borders and a cleaner look!</span></td>
+            <td><span class="note">It’s been way too quiet in the Northeast. They’re plotting something. Make an example of New Hampshire.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#18</td>
+            <td><a class="thumb-link" href="assets/maps/round_18_1stl5rp.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_18_1stl5rp.jpeg" alt="round 18 map"/></a></td>
+            <td><strong>New Hampshire</strong><br><span class="note">→ The Vermomster<span class="source-pill">prev-top</span></span></td>
+            <td>Top comment deleted a US State #18 · <a href="https://www.reddit.com/r/geographymemes/comments/1stl5rp/top_comment_deleted_a_us_state_18/" target="_blank">post</a><br><span class="note">The northeast is finally seeing some action, New Hampshire is gone! 
+
+Also I just want to say thank you for all the love on the last post, it’s really nice to see that this stupid game is having a positive impact on people’s days and I love</span></td>
+            <td><span class="note">We cannot stand to allow Oklahoma to remain.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#19</td>
+            <td><a class="thumb-link" href="assets/maps/round_19_1suhque.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_19_1suhque.jpeg" alt="round 19 map"/></a></td>
+            <td><strong>Oklahoma</strong><br><span class="note">→ Texas<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #19 · <a href="https://www.reddit.com/r/geographymemes/comments/1suhque/top_comment_deletes_a_us_state_19/" target="_blank">post</a><br><span class="note">Oklahoma is officially gone!
+
+Reminder that Hawaii and Alaska still exist, they can’t be the last ones standing!</span></td>
+            <td><span class="note">Why is Delaware on this map when it doesn’t really exist? Get it out of here!</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#20</td>
+            <td><a class="thumb-link" href="assets/maps/round_20_1svenpw.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_20_1svenpw.jpeg" alt="round 20 map"/></a></td>
+            <td><strong>Delaware</strong><br><span class="note">→ Great Maryland Empire<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #20 · <a href="https://www.reddit.com/r/geographymemes/comments/1svenpw/top_comment_deletes_a_us_state_20/" target="_blank">post</a><br><span class="note">Delaware is gone.. well fully gone now. 31 states now remain
+
+REMOVAL LIST SO FAR: 
+
+Florida
+
+Idaho
+
+Texas
+
+South Dakota
+
+West Virginia 
+
+Nebraska
+
+South Carolina 
+
+Arkansas
+
+Ohio
+
+Rhode Island 
+
+North Dakota
+
+New Jersey
+
+Alabama
+
+Missouri
+</span></td>
+            <td><span class="note">I want to see who eats Alaska.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#21</td>
+            <td><a class="thumb-link" href="assets/maps/round_21_1swb44q.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_21_1swb44q.jpeg" alt="round 21 map"/></a></td>
+            <td><strong>Alaska</strong><br><span class="note">→ Hawaii<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #21 · <a href="https://www.reddit.com/r/geographymemes/comments/1swb44q/top_comment_deletes_a_us_state_21/" target="_blank">post</a><br><span class="note">Alaska has been eaten by Hawaii
+
+REMOVAL LIST SO FAR:
+
+Florida
+
+Idaho
+
+Texas
+
+South Dakota
+
+West Virginia
+
+Nebraska
+
+South Carolina
+
+Arkansas
+
+Ohio
+
+Rhode Island
+
+North Dakota
+
+New Jersey
+
+Alabama
+
+Missouri
+
+Mississippi
+
+Indiana
+
+New Hampsh</span></td>
+            <td><span class="note">Get Utah outta here, second time asking</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#22</td>
+            <td><a class="thumb-link" href="assets/maps/round_22_1sx6ube.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_22_1sx6ube.jpeg" alt="round 22 map"/></a></td>
+            <td><strong>Utah</strong><br><span class="note">→ Colorado<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #22 · <a href="https://www.reddit.com/r/geographymemes/comments/1sx6ube/top_comment_deletes_a_us_state_22/" target="_blank">post</a><br><span class="note">Utah joins the ever growing removal list with its greedy neighbours eating it up for breakfast</span></td>
+            <td><span class="note">Connecticut, the northeast is disgustingly segregated</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#23</td>
+            <td><a class="thumb-link" href="assets/maps/round_23_1sy4d9x.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_23_1sy4d9x.jpeg" alt="round 23 map"/></a></td>
+            <td><strong>Connecticut</strong><br><span class="note">→ Massachusetts<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #23 · <a href="https://www.reddit.com/r/geographymemes/comments/1sy4d9x/top_comment_deletes_a_us_state_23/" target="_blank">post</a><br><span class="note">Connecticut has been cut from the map, leaving 28 
+
+I also fixed up some anomalies on the map you may have noticed</span></td>
+            <td><span class="note">Wyoming's gotta go, right?</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#24</td>
+            <td><a class="thumb-link" href="assets/maps/round_24_1sz1p0o.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_24_1sz1p0o.jpeg" alt="round 24 map"/></a></td>
+            <td><strong>Wyoming</strong><br><span class="note">→ Colorado<span class="source-pill">prev-top</span></span></td>
+            <td>Top comment deleted a US State #24 · <a href="https://www.reddit.com/r/geographymemes/comments/1sz1p0o/top_comment_deleted_a_us_state_24/" target="_blank">post</a><br><span class="note">Wyoming is gone!</span></td>
+            <td><span class="note">HOW IS IOWA STILL THERE?!</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#25</td>
+            <td><a class="thumb-link" href="assets/maps/round_25_1szzqp6.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_25_1szzqp6.jpeg" alt="round 25 map"/></a></td>
+            <td><strong>Iowa</strong><br><span class="note">→ Minnesota<span class="source-pill">deduced</span></span></td>
+            <td>Top comment deletes US State #25 · <a href="https://www.reddit.com/r/geographymemes/comments/1szzqp6/top_comment_deletes_us_state_25/" target="_blank">post</a><br><span class="note">IOWA IS GONE! We’re halfway to the finish line!</span></td>
+            <td><span class="note">Pennsylvania eats Kentucky!</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#26</td>
+            <td><a class="thumb-link" href="assets/maps/round_26_1t0whep.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_26_1t0whep.jpeg" alt="round 26 map"/></a></td>
+            <td><strong>Kentucky</strong><br><span class="note">→ Pennsylvania<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #26 · <a href="https://www.reddit.com/r/geographymemes/comments/1t0whep/top_comment_deletes_a_us_state_26/" target="_blank">post</a><br><span class="note">Kentucky has been eaten primarily by Pennsylvania but its greedy friends Tennessee and Illinois also had a nibble</span></td>
+            <td><span class="note">louisiana canceled elections, therefore they forfeit their land to new mexico</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#27</td>
+            <td><a class="thumb-link" href="assets/maps/round_27_1t1usif.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_27_1t1usif.jpeg" alt="round 27 map"/></a></td>
+            <td><strong>Louisiana</strong><br><span class="note">→ New Mexico (Gulf of New Mexico)<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #27 · <a href="https://www.reddit.com/r/geographymemes/comments/1t1usif/top_comment_deletes_a_us_state_27/" target="_blank">post</a><br><span class="note">Louisiana is gone!</span></td>
+            <td><span class="note">Hear me out.  The Gulf of New Mexico.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#28</td>
+            <td><a class="thumb-link" href="assets/maps/round_28_1t2ntkt.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_28_1t2ntkt.jpeg" alt="round 28 map"/></a></td>
+            <td><strong>Tennessee</strong><br><span class="note">→ Pennsylvania<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #28 · <a href="https://www.reddit.com/r/geographymemes/comments/1t2ntkt/top_comment_deletes_a_us_state_28/" target="_blank">post</a><br><span class="note">Tennessee has finally succumbed to its fate!</span></td>
+            <td><span class="note">Maine still looks too normal, feed it to Vermont.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#29</td>
+            <td><a class="thumb-link" href="assets/maps/round_29_1t3kjha.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_29_1t3kjha.jpeg" alt="round 29 map"/></a></td>
+            <td><strong>Maine</strong><br><span class="note">→ The Vermomster<span class="source-pill">prev-top</span></span></td>
+            <td>Top comment deletes US State #29 · <a href="https://www.reddit.com/r/geographymemes/comments/1t3kjha/top_comment_deletes_us_state_29/" target="_blank">post</a><br><span class="note">Maine is the next state to be gone, sacrificing its land and all 10 of its population to Vermont</span></td>
+            <td><span class="note">Gulf of New Mexico</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#30</td>
+            <td><a class="thumb-link" href="assets/maps/round_30_1t4i59x.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_30_1t4i59x.jpeg" alt="round 30 map"/></a></td>
+            <td><strong>Georgia</strong><br><span class="note">→ Great Maryland Empire<span class="source-pill">deduced</span></span></td>
+            <td>Top comment deletes US State #30 · <a href="https://www.reddit.com/r/geographymemes/comments/1t4i59x/top_comment_deletes_us_state_30/" target="_blank">post</a><br><span class="note">Georgia is the next state to be demolished
+
+Edit: I’ve updated my profile settings so that now you can view all the posts in order!</span></td>
+            <td><span class="note">Kansas and Pennsylvania be like
+
+https://preview.redd.it/ddxif5g36czg1.jpeg?width=852&amp;format=pjpg&amp;auto=webp&amp;s=c1974aff8b7abfd5414c7cd2247f09cf3be93d33</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#31</td>
+            <td><a class="thumb-link" href="assets/maps/round_31_1t5fy6l.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_31_1t5fy6l.jpeg" alt="round 31 map"/></a></td>
+            <td><strong>Nevada</strong><br><span class="note">→ Colorado<span class="source-pill">deduced</span></span></td>
+            <td>Top comment deletes US State #31 · <a href="https://www.reddit.com/r/geographymemes/comments/1t5fy6l/top_comment_deletes_us_state_31/" target="_blank">post</a><br><span class="note">Nevada is the next to go.
+
+I had to go through a load of comments and the one with the most upvotes that wanted a state removed said Nevada!
+
+Just 20 states now remain with the largest being NM currently.
+
+Thank you all so much for the cont</span></td>
+            <td><span class="note">Confederate states remaining must go</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#32</td>
+            <td><a class="thumb-link" href="assets/maps/round_32_1t6d8br.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_32_1t6d8br.jpeg" alt="round 32 map"/></a></td>
+            <td><strong>North Carolina</strong><br><span class="note">→ Great Maryland Empire<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #32 · <a href="https://www.reddit.com/r/geographymemes/comments/1t6d8br/top_comment_deletes_a_us_state_32/" target="_blank">post</a><br><span class="note">This one was suggested by u/rJohnandYoko who said all confederate states must go but since only 1 state can go I went with u/The\_Mongrel\_Tarants request to remove North Carolina as they were a confederate states so goodbye NC!</span></td>
+            <td><span class="note">All this bickering on the East Coast has distracted us from the fact that Arizona is standing between us and a greater New Mexico Empire.
+
+thanks for the award(s) 🥰</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#33</td>
+            <td><a class="thumb-link" href="assets/maps/round_33_1t7axyv.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_33_1t7axyv.jpeg" alt="round 33 map"/></a></td>
+            <td><strong>Arizona</strong><br><span class="note">→ New Mexico (Gulf of New Mexico)<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #33 · <a href="https://www.reddit.com/r/geographymemes/comments/1t7axyv/top_comment_deletes_a_us_state_33/" target="_blank">post</a><br><span class="note">Arizona is now gone, sacrificing its desert and mountains to the NME and California</span></td>
+            <td><span class="note">After what they pulled today...bye bye Virginia.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#34</td>
+            <td><a class="thumb-link" href="assets/maps/round_34_1t876xg.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_34_1t876xg.jpeg" alt="round 34 map"/></a></td>
+            <td><strong>Virginia</strong><br><span class="note">→ Great Maryland Empire<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US state #34 · <a href="https://www.reddit.com/r/geographymemes/comments/1t876xg/top_comment_deletes_a_us_state_34/" target="_blank">post</a><br><span class="note">The land of the virgins is no more, Maryland has eaten it. Also the Gulf of New Mexico is now an official thing!
+
+Just some clear ups:
+
+1. There will be NO Sanctions imposed on a state for people rallying for it across Reddit. Rally all you</span></td>
+            <td><span class="note">I'm so happy the "throw some old bay on it and feed it to maryland" worked LMAO
+
+
+
+Edit: this goes without saying that obviously MD should now eat PA. It's Maryland's turn in the spotlight.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#35</td>
+            <td><a class="thumb-link" href="assets/maps/round_35_1t98p32.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_35_1t98p32.jpeg" alt="round 35 map"/></a></td>
+            <td><strong>New York</strong><br><span class="note">→ The Vermomster<span class="source-pill">body</span></span></td>
+            <td>Top comment deletes a US State #35 · <a href="https://www.reddit.com/r/geographymemes/comments/1t98p32/top_comment_deletes_a_us_state_35/" target="_blank">post</a><br><span class="note">New York has been swallowed by the Vermonster and Massivechusetts</span></td>
+            <td><span class="note">It's time for Oregon + Washington to finally merge as one. All Hail Cascadia!
+
+ETA: Rules are I have to choose. Look, first feels leave me with Oregon going. But then I remember how many of these Tech…</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#36</td>
+            <td><a class="thumb-link" href="assets/maps/round_36_1ta5hjj.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_36_1ta5hjj.jpeg" alt="round 36 map"/></a></td>
+            <td><strong>Washington</strong><br><span class="note">→ Cascadia<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #36 · <a href="https://www.reddit.com/r/geographymemes/comments/1ta5hjj/top_comment_deletes_a_us_state_36/" target="_blank">post</a><br><span class="note">You’ve all called for it, CASCADIA is now a real thing. Although since you have to delete a state, technically it’s just Oregon in disguise and Washington is gone but we’ll call it CASCADIA. Less of a war between them, more of a merge.</span></td>
+            <td><span class="note">If Cascadia was formed. Vermont and Massachusetts should merge into New England setting up the battle between New England and New Mexico.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#37</td>
+            <td><a class="thumb-link" href="assets/maps/round_37_1tb3lkq.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_37_1tb3lkq.jpeg" alt="round 37 map"/></a></td>
+            <td><strong>Massachusetts</strong><br><span class="note">→ The Vermomster<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #37 · <a href="https://www.reddit.com/r/geographymemes/comments/1tb3lkq/top_comment_deletes_a_us_state_37/" target="_blank">post</a><br><span class="note">New England has unified, Massachusetts and Vermont have become one with each other.
+
+Since there is a lot of confusion around it, I won’t be doing any more unifications or state name changes apart from the ones we’ve already done. Remember </span></td>
+            <td><span class="note">Why is Kansas still here?</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#38</td>
+            <td><a class="thumb-link" href="assets/maps/round_38_1tc233a.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_38_1tc233a.jpeg" alt="round 38 map"/></a></td>
+            <td><strong>Kansas</strong><br><span class="note">→ Colorado<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #38 · <a href="https://www.reddit.com/r/geographymemes/comments/1tc233a/top_comment_deletes_a_us_state_38/" target="_blank">post</a><br><span class="note">Kansas has been eaten by its neighbours!
+
+Also please be aware of people editing my maps and re-uploading them. No changes will be made by commenting under those posts. Only comments under my posts</span></td>
+            <td><span class="note">Montana still being there is a failure, it's got to go.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#39</td>
+            <td><a class="thumb-link" href="assets/maps/round_39_1td1zzt.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_39_1td1zzt.jpeg" alt="round 39 map"/></a></td>
+            <td><strong>Montana</strong><br><span class="note">→ Minnesota<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #39 · <a href="https://www.reddit.com/r/geographymemes/comments/1td1zzt/top_comment_deletes_a_us_state_39/" target="_blank">post</a><br><span class="note">Montana has been swallowed by its neighbours
+
+I’ve also added a little watermark in the Toronto sea to let people know where to vote on the right post!
+
+I’d love to see the support for these states currently! Vote in the polls below 
+
+Vote </span></td>
+            <td><span class="note">GET RID OF CALIFORNIA PLEASE
+
+✅Hawaii requires land in the lower 48
+
+✅New Mexico goes sea to shining sea
+
+✅Cascadia acquires Jefferson
+
+This is what is needed.</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#40</td>
+            <td><a class="thumb-link" href="assets/maps/round_40_1tdzp7h.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_40_1tdzp7h.jpeg" alt="round 40 map"/></a></td>
+            <td><strong>California</strong><br><span class="note">→ New Mexico (Gulf of New Mexico)<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #40 · <a href="https://www.reddit.com/r/geographymemes/comments/1tdzp7h/top_comment_deletes_a_us_state_40/" target="_blank">post</a><br><span class="note">The great golden state is not so Great anymore. Hawaii has beached in SoCal, Colorado has made massive gains, pushing them to the coast, and New Mexico now goes Sea to shining sea. Cascadia also expanded bringing their glorious people down </span></td>
+            <td><span class="note">I don't know why Illinois keeps getting ignored. We absolutely do not need Illinois</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#41</td>
+            <td><a class="thumb-link" href="assets/maps/round_41_1tezdps.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_41_1tezdps.jpeg" alt="round 41 map"/></a></td>
+            <td><strong>Illinois</strong><br><span class="note">→ Michigan<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #41 · <a href="https://www.reddit.com/r/geographymemes/comments/1tezdps/top_comment_deletes_a_us_state_41/" target="_blank">post</a><br><span class="note">Illinois is now eaten 
+
+Sorry for deleting the last post, there was a major issue. Michigan was labelled Minnesota! That’s what happens when you do it in a rush in the car. Anyway it’s back up now!</span></td>
+            <td><span class="note">PENNSYLVANIA MUST GO! THEY HAVE TO BRIBE TO STAY IN THE GAME! THE BAY HUNGERS! THE CRAB MUST FEAST!
+
+![gif](giphy|uA8WItRYSRkfm)
+
+THANKS FOR THE AWARDS GUYS! THEY ARE VERY APPRECIATED 😊</span></td>
+          </tr>
+        
+          <tr>
+            <td class="num">#42</td>
+            <td><a class="thumb-link" href="assets/maps/round_42_1tfrme9.jpeg" target="_blank"><img class="thumb" src="assets/maps/round_42_1tfrme9.jpeg" alt="round 42 map"/></a></td>
+            <td><strong>Pennsylvania</strong><br><span class="note">→ Great Maryland Empire<span class="source-pill">body+prev-top</span></span></td>
+            <td>Top comment deletes a US State #42 · <a href="https://www.reddit.com/r/geographymemes/comments/1tfrme9/top_comment_deletes_a_us_state_42/" target="_blank">post</a><br><span class="note">The Maryland crab has eaten its arch nemesis, Pennsylvania, Marking the start of the GME (Great Maryland Empire) 
+
+Released this one 10 mins early because I released yesterday’s one 2 hours late so here you go!</span></td>
+            <td><span class="note">Wisconsin has lasted long enough.</span></td>
+          </tr>
+        </tbody></table>
+
+<footer>
+  <p><strong>Data vintages</strong></p>
+  <ul><li><strong>population</strong>: US Census 2020 (Decennial)</li><li><strong>land_area_sq_mi</strong>: US Census Gazetteer 2020</li><li><strong>water_area_sq_mi</strong>: US Census Gazetteer 2020</li><li><strong>gdp_million_usd</strong>: US BEA, current-dollar GDP 2023</li><li><strong>median_household_income_usd</strong>: US Census ACS 2022 5-year</li><li><strong>bachelors_or_higher_pct</strong>: US Census ACS 2022 5-year</li></ul>
+  <p>Built locally; no live API calls. Source: <a href="https://github.com/milt0r/NewMericaMeme">milt0r/NewMericaMeme</a>. Map images © the original Reddit author.</p>
+</footer>
+
+</main>
+</body></html>

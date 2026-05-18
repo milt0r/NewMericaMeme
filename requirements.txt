@@ -1,0 +1,7 @@
+requests>=2.31
+pandas>=2.2
+plotly>=5.22
+numpy>=1.26
+Pillow>=10.3
+scikit-image>=0.23
+scipy>=1.13
