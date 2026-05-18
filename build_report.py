@@ -615,6 +615,45 @@ def animated_map_chart(model, names) -> str:
     return fig.to_html(full_html=False, include_plotlyjs=False, div_id="animap")
 
 
+def image_area_trajectory_chart(model, names) -> str:
+    """Per-round per-final-empire population from image sampling. Shows true growth
+    as the OP drew it: each empire's stacked share of US population over rounds.
+    """
+    per_round_path = ROOT / "data" / "image_per_round_ownership.json"
+    if not per_round_path.exists():
+        return ""
+    raw = json.loads(per_round_path.read_text(encoding="utf-8"))
+    per_round = {int(k): v for k, v in raw.items()}
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+    empire_color = {r: PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i, r in enumerate(final_roots)}
+
+    rounds = sorted(per_round.keys())
+    fig = go.Figure()
+    for root in final_roots:
+        ys = []
+        for rnd in rounds:
+            owners = per_round[rnd]
+            pop = sum(STATES[s]["population"] for s, e in owners.items() if e == root)
+            ys.append(pop)
+        fig.add_trace(go.Scatter(
+            x=rounds, y=ys, mode="lines",
+            name=display_name_of(root, names),
+            line=dict(color=empire_color[root], width=1),
+            hovertemplate="Round %{x}<br>Pop %{y:,}<extra>%{fullData.name}</extra>",
+            stackgroup="one",
+        ))
+    fig.update_layout(
+        title="Image-derived empire population over rounds (stacked) — true growth as the OP drew it",
+        xaxis=dict(title="Round", dtick=2),
+        yaxis=dict(title="Population (stacked)"),
+        template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+        height=460, margin=dict(l=60, r=20, t=60, b=40),
+        legend=dict(orientation="h", y=-0.18),
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="img-area-traj")
+
+
 def build_pivots(model, rounds, names, image_rel) -> str:
     final = model["final"]
     final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
@@ -625,6 +664,7 @@ def build_pivots(model, rounds, names, image_rel) -> str:
     slider = image_slider(rounds, image_rel)
     treemap = treemap_chart(model, names)
     journey = state_journey_table(model, rounds, names)
+    img_traj = image_area_trajectory_chart(model, names)
 
     # Per-metric tabs
     tab_btns = []
@@ -710,9 +750,13 @@ def build_pivots(model, rounds, names, image_rel) -> str:
 <p class="note">Each bar is one round's eliminated state; bar height = its population; color = the final empire that the eliminated state eventually ended up in (after possible chained absorptions).</p>
 <div class="chart-block">{chord}</div>
 
-<h2>Animated choropleth — whole-state model</h2>
-<p class="note">Schematic version: each whole state is colored by its current empire. Splits the OP drew mid-state are <em>not</em> shown here (use the actual-map slider above for that fidelity).</p>
+<h2>Animated choropleth — image-derived per round</h2>
+<p class="note">Each state colored by the empire that OWNED IT IN THAT ROUND'S MAP (read directly from the OP's per-round image, classified to the nearest empire anchor color). For example, FL is GA's salmon from round 2 through round 29, then flips to NM's lavender at round 30 when GA's whole empire was absorbed.</p>
 <div class="chart-block">{animap}</div>
+
+<h2>Image-derived empire growth over rounds</h2>
+<p class="note">Stacked area: total population owned by each final empire at each round, classified directly from the round image. Notice how some empires (NM, MD) jump in size when they absorb a big intermediate empire.</p>
+<div class="chart-block">{img_traj or '<em class="note">(run per_round_sample.py first)</em>'}</div>
 
 <h2>Per-metric breakdowns</h2>
 <p class="note">Sums where appropriate (population, GDP, land area), otherwise population-weighted means. Click a category.</p>
