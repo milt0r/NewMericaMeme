@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>History — NewMericaMeme</title>
+
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0f1115; color: #e6e8ec; }
+.topnav { background: #161a22; border-bottom: 1px solid #232a36; position: sticky; top: 0; z-index: 50; }
+.topnav-inner { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.topnav-brand { font-weight: 700; font-size: 1.05rem; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.topnav-links a { color: #c6cfe2; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: .95rem; }
+.topnav-links a:hover { background: #1e2531; color: #fff; }
+.topnav-links a.current { background: #2a3142; color: #fff; }
+.topnav-repo { margin-left: auto; font-size: .85rem; color: #7a8294; }
+.topnav-repo a { color: #6cb1ff; text-decoration: none; }
+header.page { padding: 40px 24px 16px; max-width: 1180px; margin: 0 auto; }
+h1 { font-size: 2.2rem; margin: 0 0 8px; }
+h2 { border-bottom: 1px solid #2a2f3a; padding-bottom: 8px; margin-top: 48px; }
+h3 { margin: 0 0 4px; font-size: 1.1rem; }
+.lede { color: #a9b0bd; font-size: 1.02rem; max-width: 740px; }
+main { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .92rem; }
+th, td { border-bottom: 1px solid #232a36; padding: 8px 6px; text-align: left; vertical-align: top; }
+th { background: #1a1f29; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.note { font-size: .85rem; color: #8b93a7; }
+a { color: #6cb1ff; }
+footer { color: #7a8294; font-size: .8rem; margin-top: 60px; border-top: 1px solid #232a36; padding-top: 16px; }
+.chart-block { margin: 20px 0 40px; }
+.empire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.empire-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 16px; }
+.empire-meta { color: #8b93a7; font-size: .85rem; margin: 0 0 8px; }
+.absorb-list { padding-left: 18px; margin: 0; font-size: .92rem; }
+.absorb-list li { margin: 3px 0; }
+.absorb-list ul { padding-left: 18px; margin: 3px 0; border-left: 2px solid #2a3142; }
+.root-list { padding-left: 0; list-style: none; }
+.root-list > li { font-weight: 600; }
+.round-badge { background: #2a3142; color: #c6cfe2; padding: 1px 6px; border-radius: 4px; font-size: .75rem; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.root-badge { background: #3a4a66; color: #d6e0f5; padding: 1px 6px; border-radius: 4px; font-size: .7rem; margin-right: 6px; text-transform: uppercase; }
+.pop { color: #7a8294; font-size: .8rem; }
+.source-pill { display: inline-block; font-size: .7rem; padding: 1px 6px; border-radius: 999px; background: #243044; color: #a8b6cf; margin-left: 6px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
+.next-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.next-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 18px; }
+.next-card a { display: inline-block; margin-top: 8px; font-weight: 600; }
+
+/* History page */
+.timeline { position: relative; margin: 0; padding: 0; }
+.tl-item { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 18px; margin: 18px 0; scroll-margin-top: 80px; }
+.tl-item header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; padding: 0; max-width: none; }
+.tl-item .rnd-num { font-size: 1.8rem; font-weight: 800; color: #6cb1ff; min-width: 60px; }
+.tl-item h3 { font-size: 1.1rem; margin: 0; }
+.tl-item .meta { color: #7a8294; font-size: .85rem; margin-left: auto; }
+.tl-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
+@media (max-width: 720px) { .tl-grid { grid-template-columns: 1fr; } }
+.tl-img { width: 100%; height: auto; border-radius: 6px; border: 1px solid #2a2f3a; display: block; }
+.tl-body { font-size: .95rem; }
+.tl-body blockquote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid #3a4a66; color: #c6cfe2; background: #1a1f29; border-radius: 0 6px 6px 0; }
+.tl-elim { background: #2a3142; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: .95rem; }
+.tl-elim strong { color: #ff9b9b; }
+.tl-elim .arrow { color: #7a8294; margin: 0 6px; }
+.tl-elim .empire { color: #a8e6c1; font-weight: 600; }
+.tl-top { background: #1a2330; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: .9rem; color: #c6cfe2; }
+.tl-top .lbl { color: #7a8294; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; }
+
+/* Anchor jump strip */
+.jump-strip { background: #161a22; padding: 10px 24px; border-bottom: 1px solid #232a36; position: sticky; top: 50px; z-index: 40; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; max-width: 100%; }
+.jump-strip a { color: #6cb1ff; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: .82rem; font-variant-numeric: tabular-nums; }
+.jump-strip a:hover { background: #2a3142; }
+
+/* Pivots tabs */
+.metric-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.metric-tabs button { background: #161a22; border: 1px solid #232a36; color: #c6cfe2; padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: .9rem; }
+.metric-tabs button.active { background: #2a3142; color: #fff; border-color: #3a4a66; }
+.metric-panel { display: none; }
+.metric-panel.active { display: block; }
+
+/* Sources */
+.src-table td:first-child { font-weight: 600; }
+</style>
+</head><body>
+<nav class="topnav"><div class="topnav-inner">
+  <span class="topnav-brand">NewMericaMeme</span>
+  <span class="topnav-links"><a href="index.html" class="">Overview</a><a href="history.html" class="current">History</a><a href="pivots.html" class="">Pivots</a><a href="sources.html" class="">Sources</a></span>
+  <span class="topnav-repo"><a href="https://github.com/milt0r/NewMericaMeme">GitHub</a></span>
+</div></nav>
+<header class="page">
+    <h1>History</h1>
+    <p class="lede">All 42 rounds in order. Each entry shows the round's map, the OP's caption, the elimination event,
+    and the top comment that became the prompt for the next round.</p>
+    </header>
+<main>
+<div class="jump-strip"><a href="#round-1">#1</a><a href="#round-2">#2</a><a href="#round-3">#3</a><a href="#round-4">#4</a><a href="#round-5">#5</a><a href="#round-6">#6</a><a href="#round-7">#7</a><a href="#round-8">#8</a><a href="#round-9">#9</a><a href="#round-10">#10</a><a href="#round-11">#11</a><a href="#round-12">#12</a><a href="#round-13">#13</a><a href="#round-14">#14</a><a href="#round-15">#15</a><a href="#round-16">#16</a><a href="#round-17">#17</a><a href="#round-18">#18</a><a href="#round-19">#19</a><a href="#round-20">#20</a><a href="#round-21">#21</a><a href="#round-22">#22</a><a href="#round-23">#23</a><a href="#round-24">#24</a><a href="#round-25">#25</a><a href="#round-26">#26</a><a href="#round-27">#27</a><a href="#round-28">#28</a><a href="#round-29">#29</a><a href="#round-30">#30</a><a href="#round-31">#31</a><a href="#round-32">#32</a><a href="#round-33">#33</a><a href="#round-34">#34</a><a href="#round-35">#35</a><a href="#round-36">#36</a><a href="#round-37">#37</a><a href="#round-38">#38</a><a href="#round-39">#39</a><a href="#round-40">#40</a><a href="#round-41">#41</a><a href="#round-42">#42</a></div><div class="timeline">
+<article class="tl-item" id="round-1">
+  <header>
+    <span class="rnd-num">#01</span>
+    <h3>Top Comment Deletes a US state</h3>
+    <span class="meta">2026-04-06 · <a href="https://www.reddit.com/r/geographymemes/comments/1se3qj2/top_comment_deletes_a_us_state/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_01_1se3qj2.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_01_1se3qj2.jpeg" alt="Round 1 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim"><em>Kickoff — initial map, no elimination.</em></div>
+      
+      <div class="tl-top"><span class="lbl">Top comment (drove round #2)</span>Texas</div>
+      <p class="note" style="margin-top:8px;">Initial 50-state map; no elimination.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-2">
+  <header>
+    <span class="rnd-num">#02</span>
+    <h3>Top comment Removes a US State #2</h3>
+    <span class="meta">2026-04-07 · <a href="https://www.reddit.com/r/geographymemes/comments/1seslrj/top_comment_removes_a_us_state_2/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_02_1seslrj.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_02_1seslrj.jpeg" alt="Round 2 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Texas</strong><span class="arrow">→</span><span class="empire">New Mexico (Gulf of New Mexico)</span><span class="source-pill">list+prev-top</span></div>
+      <blockquote>Florida has been eaten by Georgia and Alabama</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #3)</span>Idaho. Nothing happens in Idaho.</div>
+      <p class="note" style="margin-top:8px;">Top comment of #1 was Texas (score 91). TX appears in #20 removal list.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-3">
+  <header>
+    <span class="rnd-num">#03</span>
+    <h3>Top comment Removes a US State #3</h3>
+    <span class="meta">2026-04-08 · <a href="https://www.reddit.com/r/geographymemes/comments/1sfm6gc/top_comment_removes_a_us_state_3/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_03_1sfm6gc.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_03_1sfm6gc.jpeg" alt="Round 3 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Florida</strong><span class="arrow">→</span><span class="empire">New Mexico (Gulf of New Mexico)</span><span class="source-pill">list+guess</span></div>
+      <blockquote>Idaho has been eaten by its surrounding neighbours</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #4)</span>Texas!</div>
+      <p class="note" style="margin-top:8px;">Florida in #20 list. Final ownership chain places it in the NM 'Gulf of New Mexico' bloc.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-4">
+  <header>
+    <span class="rnd-num">#04</span>
+    <h3>Top comment removes a US State #4</h3>
+    <span class="meta">2026-04-09 · <a href="https://www.reddit.com/r/geographymemes/comments/1sgopti/top_comment_removes_a_us_state_4/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_04_1sgopti.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_04_1sgopti.jpeg" alt="Round 4 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Idaho</strong><span class="arrow">→</span><span class="empire">Cascadia</span><span class="source-pill">list+guess</span></div>
+      <blockquote>Texas has been eaten by New Mexico, Oklahoma and Louisiana</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #5)</span>There should be only one Dakota.</div>
+      <p class="note" style="margin-top:8px;">Idaho in #20 list. Assigned to Cascadia (OR) bloc.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-5">
+  <header>
+    <span class="rnd-num">#05</span>
+    <h3>Top comment deleted a US state #5</h3>
+    <span class="meta">2026-04-10 · <a href="https://www.reddit.com/r/geographymemes/comments/1shnsxb/top_comment_deleted_a_us_state_5/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_05_1shnsxb.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_05_1shnsxb.jpeg" alt="Round 5 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>South Dakota</strong><span class="arrow">→</span><span class="empire">Minnesota</span><span class="source-pill">list+guess</span></div>
+      <blockquote>South Dakota and North Dakota had a fight to the death with only one coming out victorious, the North.</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #6)</span>West Virginia.     Really just to set up so Pennsylvania can officially be Pennsyltucky shortly</div>
+      <p class="note" style="margin-top:8px;">South Dakota in #20 list. Assigned to MN (Greater Minnesota) bloc.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-6">
+  <header>
+    <span class="rnd-num">#06</span>
+    <h3>Top comment deletes a US State #6</h3>
+    <span class="meta">2026-04-11 · <a href="https://www.reddit.com/r/geographymemes/comments/1sih0bk/top_comment_deletes_a_us_state_6/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_06_1sih0bk.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_06_1sih0bk.jpeg" alt="Round 6 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>West Virginia</strong><span class="arrow">→</span><span class="empire">Virginia</span><span class="source-pill">body</span></div>
+      <blockquote>West Virgina has been demolished by Virginia, Kentucky, Ohio, Maryland and Pennsylvania</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #7)</span>Nebraska pls</div>
+      <p class="note" style="margin-top:8px;">Demolished by VA/KY/OH/MD/PA — primary absorber VA per area.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-7">
+  <header>
+    <span class="rnd-num">#07</span>
+    <h3>Top comment deletes a US State #7</h3>
+    <span class="meta">2026-04-12 · <a href="https://www.reddit.com/r/geographymemes/comments/1sjdgbk/top_comment_deletes_a_us_state_7/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_07_1sjdgbk.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_07_1sjdgbk.jpeg" alt="Round 7 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Nebraska</strong><span class="arrow">→</span><span class="empire">Iowa</span><span class="source-pill">body</span></div>
+      <blockquote>Nebraska has been eaten by its neighbours</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #8)</span>The obvious answer is South Carolina.
+
+
+There cannot be two Dakotas.
+
+
+There cannot be two Virginias.
+
+
+**There cannot be two Carolinas**</div>
+      <p class="note" style="margin-top:8px;">Eaten by its neighbours.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-8">
+  <header>
+    <span class="rnd-num">#08</span>
+    <h3>Top comment deletes a US State #8</h3>
+    <span class="meta">2026-04-13 · <a href="https://www.reddit.com/r/geographymemes/comments/1sk94ae/top_comment_deletes_a_us_state_8/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_08_1sk94ae.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_08_1sk94ae.jpeg" alt="Round 8 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>South Carolina</strong><span class="arrow">→</span><span class="empire">Georgia</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>As heavily requested, North Carolina is now gone being eaten by its friends in the South. 
+
+43 states remain</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #9)</span>Arkansas doesn’t exist, so might as well delete it.</div>
+      <p class="note" style="margin-top:8px;">Top of #7 was SC. OP initially labelled NC by mistake; corrected in #11.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-9">
+  <header>
+    <span class="rnd-num">#09</span>
+    <h3>Top comment deletes a US State #9</h3>
+    <span class="meta">2026-04-14 · <a href="https://www.reddit.com/r/geographymemes/comments/1slbgdo/top_comment_deletes_a_us_state_9/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_09_1slbgdo.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_09_1slbgdo.jpeg" alt="Round 9 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Arkansas</strong><span class="arrow">→</span><span class="empire">Missouri</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Arkansas is no more</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #10)</span>Obviously Ohio</div>
+      <p class="note" style="margin-top:8px;">Top of #8 was Arkansas.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-10">
+  <header>
+    <span class="rnd-num">#10</span>
+    <h3>Top comment deletes a US State #10</h3>
+    <span class="meta">2026-04-15 · <a href="https://www.reddit.com/r/geographymemes/comments/1sm8pxb/top_comment_deletes_a_us_state_10/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_10_1sm8pxb.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_10_1sm8pxb.jpeg" alt="Round 10 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Ohio</strong><span class="arrow">→</span><span class="empire">Pennsylvania</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Ohio is gone (finally) comment which state you would like to see gone next</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #11)</span>Mississippi</div>
+      <p class="note" style="margin-top:8px;">Top of #9 was Ohio.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-11">
+  <header>
+    <span class="rnd-num">#11</span>
+    <h3>Top comment deletes a US State #11</h3>
+    <span class="meta">2026-04-16 · <a href="https://www.reddit.com/r/geographymemes/comments/1sn6jfl/top_comment_deletes_a_us_state_11/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_11_1sn6jfl.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_11_1sn6jfl.jpeg" alt="Round 11 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Rhode Island</strong><span class="arrow">→</span><span class="empire">Massachusetts</span><span class="source-pill">body</span></div>
+      <blockquote>Rhode Island is now gone (not that the map looks any different) and I’ve also reverted the NC/SC so that North Carolina is back for the people who were complaining</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #12)</span>North Dakota might be big now, but it still doesn't have any reason to exist.</div>
+      <p class="note" style="margin-top:8px;">Map didn't visibly change; absorbed by MA. Also reverted NC/SC swap.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-12">
+  <header>
+    <span class="rnd-num">#12</span>
+    <h3>Top comment deletes a US State #12</h3>
+    <span class="meta">2026-04-17 · <a href="https://www.reddit.com/r/geographymemes/comments/1so8cy6/top_comment_deletes_a_us_state_12/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_12_1so8cy6.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_12_1so8cy6.jpeg" alt="Round 12 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>North Dakota</strong><span class="arrow">→</span><span class="empire">Montana</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>North Dakota is gone, sacrificing its landmass to the surrounding states</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #13)</span>Why is New Jersey still there?</div>
+      <p class="note" style="margin-top:8px;">Top of #11 was North Dakota.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-13">
+  <header>
+    <span class="rnd-num">#13</span>
+    <h3>Top comment deleted a US State #13</h3>
+    <span class="meta">2026-04-18 · <a href="https://www.reddit.com/r/geographymemes/comments/1sp1rn7/top_comment_deleted_a_us_state_13/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_13_1sp1rn7.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_13_1sp1rn7.jpeg" alt="Round 13 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>New Jersey</strong><span class="arrow">→</span><span class="empire">New York</span><span class="source-pill">prev-top+list</span></div>
+      <blockquote>New Jersey is gone</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #14)</span>Remove Alabama</div>
+      <p class="note" style="margin-top:8px;">Top of #12 was New Jersey; NJ appears in #21 list.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-14">
+  <header>
+    <span class="rnd-num">#14</span>
+    <h3>Top comment deletes a US State #14</h3>
+    <span class="meta">2026-04-19 · <a href="https://www.reddit.com/r/geographymemes/comments/1spviob/top_comment_deletes_a_us_state_14/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_14_1spviob.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_14_1spviob.jpeg" alt="Round 14 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Alabama</strong><span class="arrow">→</span><span class="empire">Tennessee</span><span class="source-pill">body</span></div>
+      <blockquote>Alabama has now been consumed primarily by Tennessee, turning it into a T shape but Georgia and Mississippi have left it landlocked</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #15)</span>Finish what John Brown started and end Missouri!</div>
+      <p class="note" style="margin-top:8px;">Primarily by TN (T-shape), with GA/MS contributions.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-15">
+  <header>
+    <span class="rnd-num">#15</span>
+    <h3>Top comment deletes a US State #15</h3>
+    <span class="meta">2026-04-20 · <a href="https://www.reddit.com/r/geographymemes/comments/1squh3w/top_comment_deletes_a_us_state_15/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_15_1squh3w.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_15_1squh3w.jpeg" alt="Round 15 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Missouri</strong><span class="arrow">→</span><span class="empire">Illinois</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Missouri is GONE!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #16)</span>There’s no reason for that version of Mississippi to exist. Add it to the Louisiana Dominion</div>
+      <p class="note" style="margin-top:8px;">Top of #14 was Missouri.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-16">
+  <header>
+    <span class="rnd-num">#16</span>
+    <h3>Top comment deletes a US State #16</h3>
+    <span class="meta">2026-04-21 · <a href="https://www.reddit.com/r/geographymemes/comments/1srqhli/top_comment_deletes_a_us_state_16/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_16_1srqhli.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_16_1srqhli.jpeg" alt="Round 16 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Mississippi</strong><span class="arrow">→</span><span class="empire">Louisiana</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Mississippi has been eaten by Louisiana and Georgia, Tennessee is still landlocked.</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #17)</span>Indiana. 
+
+It’s blocking the unification of Pennsyltucky. This is unnatural and unacceptable.</div>
+      <p class="note" style="margin-top:8px;">Eaten by LA and GA; LA primary.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-17">
+  <header>
+    <span class="rnd-num">#17</span>
+    <h3>Top comment deletes a US State #17</h3>
+    <span class="meta">2026-04-22 · <a href="https://www.reddit.com/r/geographymemes/comments/1sspid4/top_comment_deletes_a_us_state_17/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_17_1sspid4.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_17_1sspid4.jpeg" alt="Round 17 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Indiana</strong><span class="arrow">→</span><span class="empire">Ohio</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Indiana is now gone and the map has had a freshen up, brighter colours, new text, state borders and a cleaner look!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #18)</span>It’s been way too quiet in the Northeast. They’re plotting something. Make an example of New Hampshire.</div>
+      <p class="note" style="margin-top:8px;">Indiana, blocking 'Pennsyltucky' unification.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-18">
+  <header>
+    <span class="rnd-num">#18</span>
+    <h3>Top comment deleted a US State #18</h3>
+    <span class="meta">2026-04-23 · <a href="https://www.reddit.com/r/geographymemes/comments/1stl5rp/top_comment_deleted_a_us_state_18/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_18_1stl5rp.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_18_1stl5rp.jpeg" alt="Round 18 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>New Hampshire</strong><span class="arrow">→</span><span class="empire">The Vermomster</span><span class="source-pill">prev-top</span></div>
+      <blockquote>The northeast is finally seeing some action, New Hampshire is gone! 
+
+Also I just want to say thank you for all the love on the last post, it’s really nice to see that this stupid game is having a positive impact on people’s days and I love seeing all the interaction between people it’s very nice. Thank you all ❤️</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #19)</span>We cannot stand to allow Oklahoma to remain.</div>
+      <p class="note" style="margin-top:8px;">Top of #17 was 'Make an example of New Hampshire'.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-19">
+  <header>
+    <span class="rnd-num">#19</span>
+    <h3>Top comment deletes a US State #19</h3>
+    <span class="meta">2026-04-24 · <a href="https://www.reddit.com/r/geographymemes/comments/1suhque/top_comment_deletes_a_us_state_19/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_19_1suhque.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_19_1suhque.jpeg" alt="Round 19 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Oklahoma</strong><span class="arrow">→</span><span class="empire">Texas</span><span class="source-pill">body</span></div>
+      <blockquote>Oklahoma is officially gone!
+
+Reminder that Hawaii and Alaska still exist, they can’t be the last ones standing!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #20)</span>Why is Delaware on this map when it doesn’t really exist? Get it out of here!</div>
+      <p class="note" style="margin-top:8px;">Oklahoma.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-20">
+  <header>
+    <span class="rnd-num">#20</span>
+    <h3>Top comment deletes a US State #20</h3>
+    <span class="meta">2026-04-25 · <a href="https://www.reddit.com/r/geographymemes/comments/1svenpw/top_comment_deletes_a_us_state_20/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_20_1svenpw.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_20_1svenpw.jpeg" alt="Round 20 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Delaware</strong><span class="arrow">→</span><span class="empire">Great Maryland Empire</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Delaware is gone.. well fully gone now. 31 states now remain
+
+REMOVAL LIST SO FAR: 
+
+Florida
+
+Idaho
+
+Texas
+
+South Dakota
+
+West Virginia 
+
+Nebraska
+
+South Carolina 
+
+Arkansas
+
+Ohio
+
+Rhode Island 
+
+North Dakota
+
+New Jersey
+
+Alabama
+
+Missouri
+
+Mississippi
+
+Indiana 
+
+New Hampshire
+
+Oklahoma
+
+Delaware</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #21)</span>I want to see who eats Alaska.</div>
+      <p class="note" style="margin-top:8px;">Delaware.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-21">
+  <header>
+    <span class="rnd-num">#21</span>
+    <h3>Top comment deletes a US State #21</h3>
+    <span class="meta">2026-04-26 · <a href="https://www.reddit.com/r/geographymemes/comments/1swb44q/top_comment_deletes_a_us_state_21/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_21_1swb44q.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_21_1swb44q.jpeg" alt="Round 21 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Alaska</strong><span class="arrow">→</span><span class="empire">Hawaii</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Alaska has been eaten by Hawaii
+
+REMOVAL LIST SO FAR:
+
+Florida
+
+Idaho
+
+Texas
+
+South Dakota
+
+West Virginia
+
+Nebraska
+
+South Carolina
+
+Arkansas
+
+Ohio
+
+Rhode Island
+
+North Dakota
+
+New Jersey
+
+Alabama
+
+Missouri
+
+Mississippi
+
+Indiana
+
+New Hampshire
+
+Oklahoma
+
+Delaware
+
+Alaska</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #22)</span>Get Utah outta here, second time asking</div>
+      <p class="note" style="margin-top:8px;">Alaska eaten by Hawaii.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-22">
+  <header>
+    <span class="rnd-num">#22</span>
+    <h3>Top comment deletes a US State #22</h3>
+    <span class="meta">2026-04-27 · <a href="https://www.reddit.com/r/geographymemes/comments/1sx6ube/top_comment_deletes_a_us_state_22/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_22_1sx6ube.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_22_1sx6ube.jpeg" alt="Round 22 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Utah</strong><span class="arrow">→</span><span class="empire">Colorado</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Utah joins the ever growing removal list with its greedy neighbours eating it up for breakfast</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #23)</span>Connecticut, the northeast is disgustingly segregated</div>
+      <p class="note" style="margin-top:8px;">Top of #21 was Utah.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-23">
+  <header>
+    <span class="rnd-num">#23</span>
+    <h3>Top comment deletes a US State #23</h3>
+    <span class="meta">2026-04-28 · <a href="https://www.reddit.com/r/geographymemes/comments/1sy4d9x/top_comment_deletes_a_us_state_23/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_23_1sy4d9x.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_23_1sy4d9x.jpeg" alt="Round 23 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Connecticut</strong><span class="arrow">→</span><span class="empire">Massachusetts</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Connecticut has been cut from the map, leaving 28 
+
+I also fixed up some anomalies on the map you may have noticed</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #24)</span>Wyoming's gotta go, right?</div>
+      <p class="note" style="margin-top:8px;">Connecticut.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-24">
+  <header>
+    <span class="rnd-num">#24</span>
+    <h3>Top comment deleted a US State #24</h3>
+    <span class="meta">2026-04-29 · <a href="https://www.reddit.com/r/geographymemes/comments/1sz1p0o/top_comment_deleted_a_us_state_24/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_24_1sz1p0o.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_24_1sz1p0o.jpeg" alt="Round 24 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Wyoming</strong><span class="arrow">→</span><span class="empire">Colorado</span><span class="source-pill">prev-top</span></div>
+      <blockquote>Wyoming is gone!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #25)</span>HOW IS IOWA STILL THERE?!</div>
+      <p class="note" style="margin-top:8px;">Top of #23 was Wyoming.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-25">
+  <header>
+    <span class="rnd-num">#25</span>
+    <h3>Top comment deletes US State #25</h3>
+    <span class="meta">2026-04-30 · <a href="https://www.reddit.com/r/geographymemes/comments/1szzqp6/top_comment_deletes_us_state_25/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_25_1szzqp6.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_25_1szzqp6.jpeg" alt="Round 25 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Iowa</strong><span class="arrow">→</span><span class="empire">Minnesota</span><span class="source-pill">deduced</span></div>
+      <blockquote>IOWA IS GONE! We’re halfway to the finish line!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #26)</span>Pennsylvania eats Kentucky!</div>
+      <p class="note" style="margin-top:8px;">One of the three states with no post; Iowa is the only Midwest state otherwise unaccounted for.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-26">
+  <header>
+    <span class="rnd-num">#26</span>
+    <h3>Top comment deletes a US State #26</h3>
+    <span class="meta">2026-05-01 · <a href="https://www.reddit.com/r/geographymemes/comments/1t0whep/top_comment_deletes_a_us_state_26/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_26_1t0whep.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_26_1t0whep.jpeg" alt="Round 26 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Kentucky</strong><span class="arrow">→</span><span class="empire">Pennsylvania</span><span class="source-pill">body</span></div>
+      <blockquote>Kentucky has been eaten primarily by Pennsylvania but its greedy friends Tennessee and Illinois also had a nibble</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #27)</span>louisiana canceled elections, therefore they forfeit their land to new mexico</div>
+      <p class="note" style="margin-top:8px;">Primarily PA, with TN/IL nibbles.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-27">
+  <header>
+    <span class="rnd-num">#27</span>
+    <h3>Top comment deletes a US State #27</h3>
+    <span class="meta">2026-05-02 · <a href="https://www.reddit.com/r/geographymemes/comments/1t1usif/top_comment_deletes_a_us_state_27/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_27_1t1usif.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_27_1t1usif.jpeg" alt="Round 27 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Louisiana</strong><span class="arrow">→</span><span class="empire">New Mexico (Gulf of New Mexico)</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Louisiana is gone!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #28)</span>Hear me out.  The Gulf of New Mexico.</div>
+      <p class="note" style="margin-top:8px;">Louisiana cancelled elections... forfeit to NM.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-28">
+  <header>
+    <span class="rnd-num">#28</span>
+    <h3>Top comment deletes a US State #28</h3>
+    <span class="meta">2026-05-03 · <a href="https://www.reddit.com/r/geographymemes/comments/1t2ntkt/top_comment_deletes_a_us_state_28/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_28_1t2ntkt.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_28_1t2ntkt.jpeg" alt="Round 28 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Tennessee</strong><span class="arrow">→</span><span class="empire">Pennsylvania</span><span class="source-pill">body</span></div>
+      <blockquote>Tennessee has finally succumbed to its fate!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #29)</span>Maine still looks too normal, feed it to Vermont.</div>
+      <p class="note" style="margin-top:8px;">Tennessee succumbs.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-29">
+  <header>
+    <span class="rnd-num">#29</span>
+    <h3>Top comment deletes US State #29</h3>
+    <span class="meta">2026-05-04 · <a href="https://www.reddit.com/r/geographymemes/comments/1t3kjha/top_comment_deletes_us_state_29/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_29_1t3kjha.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_29_1t3kjha.jpeg" alt="Round 29 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Maine</strong><span class="arrow">→</span><span class="empire">The Vermomster</span><span class="source-pill">prev-top</span></div>
+      <blockquote>Maine is the next state to be gone, sacrificing its land and all 10 of its population to Vermont</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #30)</span>Gulf of New Mexico</div>
+      <p class="note" style="margin-top:8px;">Top of #28 was 'Maine still looks too normal, feed it to Vermont'.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-30">
+  <header>
+    <span class="rnd-num">#30</span>
+    <h3>Top comment deletes US State #30</h3>
+    <span class="meta">2026-05-05 · <a href="https://www.reddit.com/r/geographymemes/comments/1t4i59x/top_comment_deletes_us_state_30/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_30_1t4i59x.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_30_1t4i59x.jpeg" alt="Round 30 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Georgia</strong><span class="arrow">→</span><span class="empire">Great Maryland Empire</span><span class="source-pill">deduced</span></div>
+      <blockquote>Georgia is the next state to be demolished
+
+Edit: I’ve updated my profile settings so that now you can view all the posts in order!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #31)</span>Kansas and Pennsylvania be like
+
+https://preview.redd.it/ddxif5g36czg1.jpeg?width=852&amp;format=pjpg&amp;auto=webp&amp;s=c1974aff8b7abfd5414c7cd2247f09cf3be93d33</div>
+      <p class="note" style="margin-top:8px;">Confederate state; gone by #32 per OP's reasoning. Likely absorbed by MD/NC empires.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-31">
+  <header>
+    <span class="rnd-num">#31</span>
+    <h3>Top comment deletes US State #31</h3>
+    <span class="meta">2026-05-06 · <a href="https://www.reddit.com/r/geographymemes/comments/1t5fy6l/top_comment_deletes_us_state_31/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_31_1t5fy6l.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_31_1t5fy6l.jpeg" alt="Round 31 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Nevada</strong><span class="arrow">→</span><span class="empire">Colorado</span><span class="source-pill">deduced</span></div>
+      <blockquote>Nevada is the next to go.
+
+I had to go through a load of comments and the one with the most upvotes that wanted a state removed said Nevada!
+
+Just 20 states now remain with the largest being NM currently.
+
+Thank you all so much for the continued engagement and support I can’t believe the last post got over 700K views! 🤯
+
+I have a big finale lined up which will be very exciting. From my calculations, the big finale will be Monday, May 25th so not that much longer!
+
+Also please only upvote the name of a state to the top otherwise it can get really hard trying to find the top comment that actually says a state name thank yall!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #32)</span>Confederate states remaining must go</div>
+      <p class="note" style="margin-top:8px;">Nevada — last Western state with no body; likely Colorado bloc.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-32">
+  <header>
+    <span class="rnd-num">#32</span>
+    <h3>Top comment deletes a US State #32</h3>
+    <span class="meta">2026-05-07 · <a href="https://www.reddit.com/r/geographymemes/comments/1t6d8br/top_comment_deletes_a_us_state_32/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_32_1t6d8br.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_32_1t6d8br.jpeg" alt="Round 32 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>North Carolina</strong><span class="arrow">→</span><span class="empire">Great Maryland Empire</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>This one was suggested by u/rJohnandYoko who said all confederate states must go but since only 1 state can go I went with u/The\_Mongrel\_Tarants request to remove North Carolina as they were a confederate states so goodbye NC!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #33)</span>All this bickering on the East Coast has distracted us from the fact that Arizona is standing between us and a greater New Mexico Empire.
+
+thanks for the award(s) 🥰</div>
+      <p class="note" style="margin-top:8px;">Confederate-states request: NC chosen for permanent removal.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-33">
+  <header>
+    <span class="rnd-num">#33</span>
+    <h3>Top comment deletes a US State #33</h3>
+    <span class="meta">2026-05-08 · <a href="https://www.reddit.com/r/geographymemes/comments/1t7axyv/top_comment_deletes_a_us_state_33/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_33_1t7axyv.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_33_1t7axyv.jpeg" alt="Round 33 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Arizona</strong><span class="arrow">→</span><span class="empire">New Mexico (Gulf of New Mexico)</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Arizona is now gone, sacrificing its desert and mountains to the NME and California</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #34)</span>After what they pulled today...bye bye Virginia.</div>
+      <p class="note" style="margin-top:8px;">Sacrificed to NME (NM) and California.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-34">
+  <header>
+    <span class="rnd-num">#34</span>
+    <h3>Top comment deletes a US state #34</h3>
+    <span class="meta">2026-05-09 · <a href="https://www.reddit.com/r/geographymemes/comments/1t876xg/top_comment_deletes_a_us_state_34/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_34_1t876xg.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_34_1t876xg.jpeg" alt="Round 34 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Virginia</strong><span class="arrow">→</span><span class="empire">Great Maryland Empire</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>The land of the virgins is no more, Maryland has eaten it. Also the Gulf of New Mexico is now an official thing!
+
+Just some clear ups:
+
+1. There will be NO Sanctions imposed on a state for people rallying for it across Reddit. Rally all you want, share and spread the word as much as possible. After all, this is a community game where people want their state to win and I appreciate that. The only rule in this game, is the top comment deletes a state.
+
+2. Thank you all so much for the continued support, the last post got near 1 million views which I find absolutely crazy. I hear people have got their families, friends and communities in on this which is amazing and I'm all here for it. The finale is going to be truly epic.
+
+3. Feel free to make a time-lapse if you wish for the finale. I’ve seen people say they will be doing this and it’s a great idea!
+
+To adhere to Reddits and this subreddits rules, at the request of the moderators please check out this post [Here](https://www.reddit.com/r/geographymemes/s/klalwWT089) to read about rallying before posting
+
+Thank you all ❤️</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #35)</span>I'm so happy the "throw some old bay on it and feed it to maryland" worked LMAO
+
+
+
+Edit: this goes without saying that obviously MD should now eat PA. It's Maryland's turn in the spotlight.</div>
+      <p class="note" style="margin-top:8px;">Land of the virgins eaten by Maryland.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-35">
+  <header>
+    <span class="rnd-num">#35</span>
+    <h3>Top comment deletes a US State #35</h3>
+    <span class="meta">2026-05-10 · <a href="https://www.reddit.com/r/geographymemes/comments/1t98p32/top_comment_deletes_a_us_state_35/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_35_1t98p32.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_35_1t98p32.jpeg" alt="Round 35 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>New York</strong><span class="arrow">→</span><span class="empire">The Vermomster</span><span class="source-pill">body</span></div>
+      <blockquote>New York has been swallowed by the Vermonster and Massivechusetts</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #36)</span>It's time for Oregon + Washington to finally merge as one. All Hail Cascadia!
+
+ETA: Rules are I have to choose. Look, first feels leave me with Oregon going. But then I remember how many of these Tech Oligarchs are setup in Seattle.. and then there is Portland standing up to the power.
+
+So I will stand on my hill. Sorry, Washington. You go. But the final name shall be Cascadia. That’s where I’m at…</div>
+      <p class="note" style="margin-top:8px;">Swallowed by Vermonster and Massivechusetts (mostly VT).</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-36">
+  <header>
+    <span class="rnd-num">#36</span>
+    <h3>Top comment deletes a US State #36</h3>
+    <span class="meta">2026-05-11 · <a href="https://www.reddit.com/r/geographymemes/comments/1ta5hjj/top_comment_deletes_a_us_state_36/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_36_1ta5hjj.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_36_1ta5hjj.jpeg" alt="Round 36 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Washington</strong><span class="arrow">→</span><span class="empire">Cascadia</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>You’ve all called for it, CASCADIA is now a real thing. Although since you have to delete a state, technically it’s just Oregon in disguise and Washington is gone but we’ll call it CASCADIA. Less of a war between them, more of a merge.</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #37)</span>If Cascadia was formed. Vermont and Massachusetts should merge into New England setting up the battle between New England and New Mexico.</div>
+      <p class="note" style="margin-top:8px;">WA merged into OR -> Cascadia.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-37">
+  <header>
+    <span class="rnd-num">#37</span>
+    <h3>Top comment deletes a US State #37</h3>
+    <span class="meta">2026-05-12 · <a href="https://www.reddit.com/r/geographymemes/comments/1tb3lkq/top_comment_deletes_a_us_state_37/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_37_1tb3lkq.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_37_1tb3lkq.jpeg" alt="Round 37 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Massachusetts</strong><span class="arrow">→</span><span class="empire">The Vermomster</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>New England has unified, Massachusetts and Vermont have become one with each other.
+
+Since there is a lot of confusion around it, I won’t be doing any more unifications or state name changes apart from the ones we’ve already done. Remember this is top comment deletes a US State!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #38)</span>Why is Kansas still here?</div>
+      <p class="note" style="margin-top:8px;">MA merged into VT -> 'The Vermomster'.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-38">
+  <header>
+    <span class="rnd-num">#38</span>
+    <h3>Top comment deletes a US State #38</h3>
+    <span class="meta">2026-05-13 · <a href="https://www.reddit.com/r/geographymemes/comments/1tc233a/top_comment_deletes_a_us_state_38/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_38_1tc233a.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_38_1tc233a.jpeg" alt="Round 38 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Kansas</strong><span class="arrow">→</span><span class="empire">Colorado</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Kansas has been eaten by its neighbours!
+
+Also please be aware of people editing my maps and re-uploading them. No changes will be made by commenting under those posts. Only comments under my posts</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #39)</span>Montana still being there is a failure, it's got to go.</div>
+      <p class="note" style="margin-top:8px;">Kansas.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-39">
+  <header>
+    <span class="rnd-num">#39</span>
+    <h3>Top comment deletes a US State #39</h3>
+    <span class="meta">2026-05-14 · <a href="https://www.reddit.com/r/geographymemes/comments/1td1zzt/top_comment_deletes_a_us_state_39/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_39_1td1zzt.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_39_1td1zzt.jpeg" alt="Round 39 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Montana</strong><span class="arrow">→</span><span class="empire">Minnesota</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Montana has been swallowed by its neighbours
+
+I’ve also added a little watermark in the Toronto sea to let people know where to vote on the right post!
+
+I’d love to see the support for these states currently! Vote in the polls below 
+
+Vote for Maryland or Pennsylvania: [https://www.reddit.com/r/geographymemes/s/821mtWqhst](https://www.reddit.com/r/geographymemes/s/821mtWqhst)
+
+Vote for New Mexico or New England: https://www.reddit.com/r/geographymemes/s/YKlFZTtcqe</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #40)</span>GET RID OF CALIFORNIA PLEASE
+
+✅Hawaii requires land in the lower 48
+
+✅New Mexico goes sea to shining sea
+
+✅Cascadia acquires Jefferson
+
+This is what is needed.</div>
+      <p class="note" style="margin-top:8px;">Montana.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-40">
+  <header>
+    <span class="rnd-num">#40</span>
+    <h3>Top comment deletes a US State #40</h3>
+    <span class="meta">2026-05-15 · <a href="https://www.reddit.com/r/geographymemes/comments/1tdzp7h/top_comment_deletes_a_us_state_40/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_40_1tdzp7h.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_40_1tdzp7h.jpeg" alt="Round 40 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>California</strong><span class="arrow">→</span><span class="empire">New Mexico (Gulf of New Mexico)</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>The great golden state is not so Great anymore. Hawaii has beached in SoCal, Colorado has made massive gains, pushing them to the coast, and New Mexico now goes Sea to shining sea. Cascadia also expanded bringing their glorious people down south. 
+
+There is now only 10 More Games until the Finale. Make wise decisions on who you vote for, only 11 remain…</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #41)</span>I don't know why Illinois keeps getting ignored. We absolutely do not need Illinois</div>
+      <p class="note" style="margin-top:8px;">Hawaii beached in SoCal; CO to coast; NM sea-to-shining-sea; Cascadia south. NM gets the largest slice.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-41">
+  <header>
+    <span class="rnd-num">#41</span>
+    <h3>Top comment deletes a US State #41</h3>
+    <span class="meta">2026-05-16 · <a href="https://www.reddit.com/r/geographymemes/comments/1tezdps/top_comment_deletes_a_us_state_41/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_41_1tezdps.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_41_1tezdps.jpeg" alt="Round 41 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Illinois</strong><span class="arrow">→</span><span class="empire">Michigan</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>Illinois is now eaten 
+
+Sorry for deleting the last post, there was a major issue. Michigan was labelled Minnesota! That’s what happens when you do it in a rush in the car. Anyway it’s back up now!</blockquote>
+      <div class="tl-top"><span class="lbl">Top comment (drove round #42)</span>PENNSYLVANIA MUST GO! THEY HAVE TO BRIBE TO STAY IN THE GAME! THE BAY HUNGERS! THE CRAB MUST FEAST!
+
+![gif](giphy|uA8WItRYSRkfm)
+
+THANKS FOR THE AWARDS GUYS! THEY ARE VERY APPRECIATED 😊</div>
+      <p class="note" style="margin-top:8px;">Illinois.</p>
+    </div>
+  </div>
+</article>
+<article class="tl-item" id="round-42">
+  <header>
+    <span class="rnd-num">#42</span>
+    <h3>Top comment deletes a US State #42</h3>
+    <span class="meta">2026-05-17 · <a href="https://www.reddit.com/r/geographymemes/comments/1tfrme9/top_comment_deletes_a_us_state_42/" target="_blank">reddit post</a></span>
+  </header>
+  <div class="tl-grid">
+    <div><a href="assets/maps/round_42_1tfrme9.jpeg" target="_blank"><img class="tl-img" src="assets/maps/round_42_1tfrme9.jpeg" alt="Round 42 map"/></a></div>
+    <div class="tl-body">
+      <div class="tl-elim">Eliminated: <strong>Pennsylvania</strong><span class="arrow">→</span><span class="empire">Great Maryland Empire</span><span class="source-pill">body+prev-top</span></div>
+      <blockquote>The Maryland crab has eaten its arch nemesis, Pennsylvania, Marking the start of the GME (Great Maryland Empire) 
+
+Released this one 10 mins early because I released yesterday’s one 2 hours late so here you go!</blockquote>
+      
+      <p class="note" style="margin-top:8px;">Maryland crab eats Pennsylvania. GME (Great Maryland Empire).</p>
+    </div>
+  </div>
+</article></div>
+<footer>
+  <p>Source: <a href="https://github.com/milt0r/NewMericaMeme">milt0r/NewMericaMeme</a> · static report, no live API calls · map images from the original Reddit posts</p>
+</footer>
+</main>
+</body></html>

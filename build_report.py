@@ -1,329 +1,40 @@
-"""Build the static HTML report at docs/index.html.
+"""Build the multi-page static report under docs/.
 
-Steps:
-  1. Load canonical round ledger (data/rounds.json).
-  2. Load per-state metrics (state_data.py).
-  3. Replay rounds -> merger forest (root state -> list of absorbed states in order).
-  4. Compute per-round per-empire aggregates (pop sums, GDP sums, weighted means).
-  5. Render Plotly charts (cumulative pop, GDP, land area; final-ranking bars).
-  6. Render merger trees + ledger table + final metrics table into index.html.
+Emits:
+  docs/index.html    — Overview (current state + headline charts)
+  docs/history.html  — Post-by-post timeline
+  docs/pivots.html   — Sankey + chord + per-metric breakdowns + animated map
+  docs/sources.html  — Data lineage + methodology
 """
 from __future__ import annotations
 
 import json
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 
 import plotly.graph_objects as go
 
-from state_data import STATES, VINTAGES
+from layout import page
+from model import (IMG_AREA_JSON, PLOTLY_COLORS, ROOT, aggregate, build_model,
+                   load_rounds)
+from state_data import METRIC_GROUPS, SOURCES, STATES
 
-ROOT = Path(__file__).parent
-ROUNDS_JSON = ROOT / "data" / "rounds.json"
-IMG_AREA_JSON = ROOT / "data" / "image_area_round42.json"
-IMG_SRC = ROOT / "data" / "images"
 DOCS = ROOT / "docs"
-DOCS_IMG = DOCS / "assets" / "maps"
-OUT = DOCS / "index.html"
-
-PLOTLY_COLORS = [
-    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
-    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
-]
+DOCS_MAPS = DOCS / "assets" / "maps"
 
 
-# ---------- model ----------------------------------------------------------
+# ============================================================
+# Shared helpers
+# ============================================================
 
-def build_model(rounds: list[dict]) -> dict:
-    """Replay rounds; return merger forest + per-round aggregates.
-
-    DC is excluded — the meme map only shows the 50 states and DC was never in play.
-    """
-    states_in_play = [u for u in STATES if u != "DC"]
-    ownership: dict[str, str] = {u: u for u in states_in_play}
-
-    def resolve(u: str) -> str:
-        # path-compress for speed and to keep ownership flat
-        seen = []
-        while ownership[u] != u:
-            seen.append(u)
-            u = ownership[u]
-        for s in seen:
-            ownership[s] = u
-        return u
-
-    # For each absorbed state, record the *direct* parent at time of absorption
-    # (i.e. the empire-root the eliminated state's own empire merged into).
-    # children[parent] = ordered list of (round, child_root) where child_root
-    # was, at that round, a root of its own sub-empire.
-    children: dict[str, list[tuple[int, str]]] = {u: [] for u in states_in_play}
-    timeline: list[dict] = []
-
-    for r in rounds:
-        rnd = r["round"]
-        elim = r["eliminated_state"]
-        emp = r["empire_root"]
-        if elim and emp:
-            elim_root = resolve(elim)
-            emp_root = resolve(emp)
-            if elim_root != emp_root:
-                children[emp_root].append((rnd, elim_root))
-                ownership[elim_root] = emp_root
-        # snapshot: group every state by its current resolved root
-        empires: dict[str, list[str]] = {}
-        for usps in states_in_play:
-            empires.setdefault(resolve(usps), []).append(usps)
-        snap = {"round": rnd, "empires": {}}
-        for root, members in empires.items():
-            agg = aggregate(members)
-            agg["members"] = members
-            snap["empires"][root] = agg
-        timeline.append(snap)
-
-    final = timeline[-1]["empires"]
-    return {"ownership": ownership, "children": children, "timeline": timeline, "final": final}
+def display_name_of(root: str, names: dict) -> str:
+    return names.get(root, STATES[root]["name"])
 
 
-def aggregate(members: list[str]) -> dict:
-    pop = sum(STATES[m]["population"] for m in members)
-    land = sum(STATES[m]["land_area_sq_mi"] for m in members)
-    water = sum(STATES[m]["water_area_sq_mi"] for m in members)
-    total = land + water
-    gdp = sum(STATES[m]["gdp_million_usd"] for m in members)
-    mhi = sum(STATES[m]["median_household_income_usd"] * STATES[m]["population"] for m in members) / pop if pop else 0
-    bach = sum(STATES[m]["bachelors_or_higher_pct"] * STATES[m]["population"] for m in members) / pop if pop else 0
-    return {
-        "population": pop,
-        "land_area_sq_mi": land,
-        "water_area_sq_mi": water,
-        "water_pct": (water / total * 100.0) if total else 0,
-        "gdp_million_usd": gdp,
-        "gdp_per_capita_usd": (gdp * 1_000_000 / pop) if pop else 0,
-        "median_household_income_usd": mhi,
-        "bachelors_or_higher_pct": bach,
-    }
-
-
-# ---------- charts ---------------------------------------------------------
-
-def line_chart(timeline: list[dict], final_roots: list[str], metric: str, title: str, yaxis: str, display_names: dict) -> str:
-    """Plot one line per final surviving empire, traced backward through rounds.
-    For each surviving empire, its value at round R = sum of metric over the
-    *current* members of that empire at round R (since each member was an
-    independent empire until it was absorbed).
-    """
-    # owner-at-round-R for each surviving root
-    fig = go.Figure()
-    rounds = [s["round"] for s in timeline]
-    # for each surviving root, figure out which states map into it through history.
-    # at round R, the contributing states = members of empire `root` AT round R.
-    for i, root in enumerate(final_roots):
-        ys = []
-        for snap in timeline:
-            # find the empire snapshot that contains `root` (which by definition is `root` itself)
-            agg = snap["empires"].get(root)
-            ys.append(agg[metric] if agg else None)
-        fig.add_trace(go.Scatter(
-            x=rounds, y=ys, mode="lines+markers",
-            name=display_names.get(root, STATES[root]["name"]),
-            line=dict(color=PLOTLY_COLORS[i % len(PLOTLY_COLORS)], width=2),
-            hovertemplate="Round %{x}<br>%{y:,.0f}<extra>%{fullData.name}</extra>",
-        ))
-    fig.update_layout(
-        title=title, xaxis_title="Round", yaxis_title=yaxis,
-        template="plotly_white", height=460, margin=dict(l=40, r=20, t=60, b=40),
-        legend=dict(orientation="h", y=-0.18),
-    )
-    return fig.to_html(full_html=False, include_plotlyjs=False, div_id=f"chart-{metric}")
-
-
-def bar_chart(final: dict, final_roots: list[str], metric: str, title: str, yaxis: str, display_names: dict, fmt: str = ",.0f") -> str:
-    sorted_roots = sorted(final_roots, key=lambda r: final[r][metric], reverse=True)
-    xs = [display_names.get(r, STATES[r]["name"]) for r in sorted_roots]
-    ys = [final[r][metric] for r in sorted_roots]
-    fig = go.Figure(go.Bar(
-        x=xs, y=ys,
-        marker_color=[PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i in range(len(xs))],
-        hovertemplate="%{x}<br>%{y:" + fmt + "}<extra></extra>",
-        text=[f"{y:{fmt}}" for y in ys], textposition="outside",
-    ))
-    fig.update_layout(
-        title=title, yaxis_title=yaxis, template="plotly_white",
-        height=420, margin=dict(l=40, r=20, t=60, b=80), showlegend=False,
-    )
-    return fig.to_html(full_html=False, include_plotlyjs=False, div_id=f"bar-{metric}")
-
-
-def scatter_chart(final: dict, final_roots: list[str], display_names: dict) -> str:
-    fig = go.Figure()
-    for i, root in enumerate(final_roots):
-        agg = final[root]
-        fig.add_trace(go.Scatter(
-            x=[agg["gdp_per_capita_usd"]],
-            y=[agg["bachelors_or_higher_pct"]],
-            mode="markers+text",
-            name=display_names.get(root, STATES[root]["name"]),
-            marker=dict(
-                size=max(15, (agg["population"] / 3_000_000) ** 0.6 * 10),
-                color=PLOTLY_COLORS[i % len(PLOTLY_COLORS)],
-                line=dict(width=1, color="white"),
-            ),
-            text=[display_names.get(root, STATES[root]["name"])],
-            textposition="top center",
-            hovertemplate=(
-                "<b>%{fullData.name}</b><br>"
-                "GDP/capita: $%{x:,.0f}<br>"
-                "Bachelor's+: %{y:.1f}%<br>"
-                f"Population: {agg['population']:,}<extra></extra>"
-            ),
-        ))
-    fig.update_layout(
-        title="Final empires: GDP per capita vs. Bachelor's-or-higher % (bubble = population)",
-        xaxis_title="GDP per capita (USD, 2023)",
-        yaxis_title="Bachelor's degree or higher % (ACS 2022)",
-        template="plotly_white", height=480, showlegend=False,
-        margin=dict(l=60, r=20, t=60, b=50),
-    )
-    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="chart-scatter")
-
-
-# ---------- tree rendering -------------------------------------------------
-
-def _subtree_members(node: str, children: dict) -> list[str]:
-    members = [node]
-    for _, ch in children.get(node, []):
-        members.extend(_subtree_members(ch, children))
-    return members
-
-
-def _render_node(node: str, round_absorbed: int | None, children: dict, display_names: dict) -> str:
-    """Recursively render one node in the merger tree (ul/li)."""
-    own_pop = STATES[node]["population"]
-    sub_members = _subtree_members(node, children)
-    sub_pop = sum(STATES[m]["population"] for m in sub_members)
-    label_state = STATES[node]["name"]
-    badge = f'<span class="round-badge">#{round_absorbed}</span>' if round_absorbed is not None else '<span class="root-badge">root</span>'
-    extra = ""
-    if len(sub_members) > 1:
-        extra = f' <span class="pop">(self {own_pop:,}; subtree {sub_pop:,} across {len(sub_members)} states)</span>'
-    else:
-        extra = f' <span class="pop">({own_pop:,})</span>'
-    kids = children.get(node, [])
-    inner = ""
-    if kids:
-        # render in round order
-        inner = "<ul class='absorb-list'>" + "".join(
-            _render_node(ch, rnd, children, display_names) for rnd, ch in kids
-        ) + "</ul>"
-    return f"<li>{badge} {label_state}{extra}{inner}</li>"
-
-
-def render_tree(root: str, children: dict, display_names: dict) -> str:
-    name = display_names.get(root, STATES[root]["name"])
-    members = _subtree_members(root, children)
-    pop = sum(STATES[m]["population"] for m in members)
-    body = "<ul class='absorb-list root-list'>" + _render_node(root, None, children, display_names) + "</ul>"
-    return f"""
-    <div class="empire-card">
-      <h3>{name}</h3>
-      <p class="empire-meta">{len(members)} states · pop {pop:,}</p>
-      {body}
-    </div>
-    """
-
-
-def area_compare_chart(final: dict, final_roots: list[str], image_shares: dict[str, float], display_names: dict) -> str:
-    """Side-by-side bars: model area share vs image-derived area share per empire.
-    Highlights where the visual map differs from the whole-state attribution (i.e. splits).
-    """
-    total_land = sum(agg["land_area_sq_mi"] for agg in final.values())
-    sorted_roots = sorted(final_roots, key=lambda r: final[r]["land_area_sq_mi"], reverse=True)
-    xs = [display_names.get(r, STATES[r]["name"]) for r in sorted_roots]
-    model_pct = [final[r]["land_area_sq_mi"] / total_land * 100 for r in sorted_roots]
-    img_pct = [image_shares.get(r, 0.0) for r in sorted_roots]
-    fig = go.Figure()
-    fig.add_trace(go.Bar(name="Whole-state model %", x=xs, y=model_pct, marker_color="#6cb1ff",
-                         text=[f"{v:.1f}%" for v in model_pct], textposition="outside"))
-    fig.add_trace(go.Bar(name="Image-derived %", x=xs, y=img_pct, marker_color="#ffae6c",
-                         text=[f"{v:.1f}%" for v in img_pct], textposition="outside"))
-    fig.update_layout(
-        title="Area share per empire — whole-state attribution vs. round-42 image segmentation",
-        yaxis_title="Share of map (%)",
-        barmode="group", template="plotly_white", height=460,
-        margin=dict(l=40, r=20, t=70, b=80),
-        legend=dict(orientation="h", y=-0.22),
-    )
-    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="chart-area-compare")
-
-
-# ---------- main report ----------------------------------------------------
-
-CSS = """
-:root { color-scheme: dark; }
-* { box-sizing: border-box; }
-body { font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0f1115; color: #e6e8ec; }
-header { padding: 48px 24px 24px; max-width: 1100px; margin: 0 auto; }
-h1 { font-size: 2.4rem; margin: 0 0 8px; }
-h2 { border-bottom: 1px solid #2a2f3a; padding-bottom: 8px; margin-top: 56px; }
-h3 { margin: 0 0 4px; font-size: 1.15rem; }
-.lede { color: #a9b0bd; font-size: 1.05rem; max-width: 700px; }
-main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
-.empire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.empire-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 16px; }
-.empire-card .root-pop { font-size: .75rem; color: #7a8294; font-weight: normal; margin-left: 6px; }
-.empire-meta { color: #8b93a7; font-size: .85rem; margin: 0 0 8px; }
-.absorb-list { padding-left: 18px; margin: 0; font-size: .92rem; }
-.absorb-list li { margin: 3px 0; }
-.absorb-list ul { padding-left: 18px; margin: 3px 0; border-left: 2px solid #2a3142; }
-.root-list { padding-left: 0; list-style: none; }
-.root-list > li { font-weight: 600; }
-.root-badge { background: #3a4a66; color: #d6e0f5; padding: 1px 6px; border-radius: 4px; font-size: .7rem; margin-right: 6px; text-transform: uppercase; letter-spacing: .03em; }
-.round-badge { background: #2a3142; color: #c6cfe2; padding: 1px 6px; border-radius: 4px; font-size: .75rem; margin-right: 6px; font-variant-numeric: tabular-nums; }
-.pop { color: #7a8294; font-size: .8rem; }
-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .92rem; }
-th, td { border-bottom: 1px solid #232a36; padding: 8px 6px; text-align: left; vertical-align: top; }
-th { background: #1a1f29; font-weight: 600; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-.thumb { width: 120px; height: auto; border-radius: 4px; border: 1px solid #2a2f3a; display: block; }
-.thumb-link { display: inline-block; }
-.note { font-size: .8rem; color: #8b93a7; }
-.source-pill { display: inline-block; font-size: .7rem; padding: 1px 6px; border-radius: 999px; background: #243044; color: #a8b6cf; margin-left: 6px; }
-footer { color: #7a8294; font-size: .8rem; margin-top: 60px; border-top: 1px solid #232a36; padding-top: 16px; }
-footer ul { padding-left: 18px; }
-.chart-block { margin: 24px 0 48px; }
-.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
-a { color: #6cb1ff; }
-"""
-
-HEADER = """
-<header>
-  <h1>NewMericaMeme</h1>
-  <p class="lede">A data report on the r/geographymemes voting series <em>"Top comment deletes a US State"</em>.
-    After 42 rounds and 41 absorptions, {n_empires} empires remain. This report shows the merger trees,
-    cumulative population/GDP timelines, final rankings, a round-by-round ledger of every state that fell,
-    and an image-based check on the splits the OP drew between empires.
-  </p>
-  <p class="note">Posts for rounds <strong>#2–#5, #13, #18, #24, #25, #29, #30, #31</strong> are no longer on Reddit (likely deleted — post #41 mentions re-uploads). Eliminations for those rounds were deduced from each surrounding post's top comment and OP's running removal lists; the three states with no signal at all (rounds 25, 30, 31) had to be Iowa, Georgia, and Nevada because those were the only states unaccounted for at the end.</p>
-</header>
-"""
-
-
-def main() -> int:
-    DOCS.mkdir(parents=True, exist_ok=True)
-    DOCS_IMG.mkdir(parents=True, exist_ok=True)
-
-    data = json.loads(ROUNDS_JSON.read_text(encoding="utf-8"))
-    rounds = data["rounds"]
-    display_names = data["empire_display_names"]
-    model = build_model(rounds)
-
-    final = model["final"]
-    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
-    n_empires = len(final_roots)
-    print(f"Surviving empires ({n_empires}): {', '.join(display_names.get(r, STATES[r]['name']) for r in final_roots)}")
-
-    # copy round images into docs/assets/maps so the report is self-contained for GH Pages
-    image_rel: dict[int, str] = {}
+def copy_maps(rounds: list[dict]) -> dict[int, str]:
+    DOCS_MAPS.mkdir(parents=True, exist_ok=True)
+    out: dict[int, str] = {}
     for r in rounds:
         src = r.get("image_local")
         if not src:
@@ -331,131 +42,586 @@ def main() -> int:
         src_p = ROOT / src
         if not src_p.exists():
             continue
-        dst = DOCS_IMG / src_p.name
+        dst = DOCS_MAPS / src_p.name
         if not dst.exists() or dst.stat().st_size != src_p.stat().st_size:
             shutil.copy2(src_p, dst)
-        image_rel[r["round"]] = f"assets/maps/{src_p.name}"
+        out[r["round"]] = f"assets/maps/{src_p.name}"
+    return out
 
-    # charts
-    line_pop = line_chart(model["timeline"], final_roots, "population", "Cumulative empire population over rounds", "Population", display_names)
-    line_gdp = line_chart(model["timeline"], final_roots, "gdp_million_usd", "Cumulative empire GDP over rounds", "GDP (millions USD)", display_names)
-    line_land = line_chart(model["timeline"], final_roots, "land_area_sq_mi", "Cumulative empire land area over rounds", "Land area (sq mi)", display_names)
-    bar_pop = bar_chart(final, final_roots, "population", "Final empire population", "Population", display_names)
-    bar_gdp = bar_chart(final, final_roots, "gdp_million_usd", "Final empire GDP (USD millions)", "GDP", display_names)
-    bar_land = bar_chart(final, final_roots, "land_area_sq_mi", "Final empire land area (sq mi)", "Land area", display_names)
-    scatter = scatter_chart(final, final_roots, display_names)
 
-    # image-derived area share (if image_analysis.py was run)
-    area_compare_html = ""
-    if IMG_AREA_JSON.exists():
-        img_data = json.loads(IMG_AREA_JSON.read_text(encoding="utf-8"))
-        area_compare_html = area_compare_chart(final, final_roots, img_data["shares_pct"], display_names)
+# ============================================================
+# Charts (shared helpers)
+# ============================================================
 
-    # merger trees
-    trees_html = "".join(render_tree(r, model["children"], display_names) for r in final_roots)
-
-    # round ledger table
-    ledger_rows = []
-    for r in rounds:
-        img = image_rel.get(r["round"])
-        thumb = f'<a class="thumb-link" href="{img}" target="_blank"><img class="thumb" src="{img}" alt="round {r["round"]} map"/></a>' if img else '<span class="note">no image</span>'
-        elim = STATES[r["eliminated_state"]]["name"] if r["eliminated_state"] else "—"
-        emp_root = r["empire_root"]
-        emp_name = display_names.get(emp_root, STATES[emp_root]["name"] if emp_root else "—") if emp_root else "—"
-        post_link = f'<a href="{r["post_url"]}" target="_blank">post</a>' if r["post_url"] else '<span class="note">missing</span>'
-        top = r.get("top_comment_body") or ""
-        if len(top) > 200:
-            top = top[:200] + "…"
-        ledger_rows.append(f"""
-          <tr>
-            <td class="num">#{r['round']:02d}</td>
-            <td>{thumb}</td>
-            <td><strong>{elim}</strong><br><span class="note">→ {emp_name}<span class="source-pill">{r['source']}</span></span></td>
-            <td>{r['post_title'] or '<em>(post missing)</em>'} · {post_link}<br><span class="note">{(r['post_body'] or '')[:240]}</span></td>
-            <td><span class="note">{top}</span></td>
-          </tr>
-        """)
-    ledger = "<table><thead><tr><th>Round</th><th>Map</th><th>Eliminated → Empire</th><th>OP post</th><th>Top comment (drove next round)</th></tr></thead><tbody>" + "".join(ledger_rows) + "</tbody></table>"
-
-    # final empires metrics table
-    metric_rows = []
-    for r in final_roots:
-        agg = final[r]
-        metric_rows.append(f"""
-          <tr>
-            <td><strong>{display_names.get(r, STATES[r]['name'])}</strong><br><span class="note">root: {STATES[r]['name']}</span></td>
-            <td class="num">{len(agg['members'])}</td>
-            <td class="num">{agg['population']:,}</td>
-            <td class="num">{agg['land_area_sq_mi']:,}</td>
-            <td class="num">{agg['water_pct']:.1f}%</td>
-            <td class="num">${agg['gdp_million_usd']:,.0f}M</td>
-            <td class="num">${agg['gdp_per_capita_usd']:,.0f}</td>
-            <td class="num">${agg['median_household_income_usd']:,.0f}</td>
-            <td class="num">{agg['bachelors_or_higher_pct']:.1f}%</td>
-          </tr>
-        """)
-    final_table = (
-        "<table><thead><tr><th>Empire</th><th class='num'>States</th><th class='num'>Population</th>"
-        "<th class='num'>Land area (mi²)</th><th class='num'>Water %</th><th class='num'>GDP</th>"
-        "<th class='num'>GDP / capita</th><th class='num'>Median HH income</th><th class='num'>Bachelor's+ %</th>"
-        "</tr></thead><tbody>" + "".join(metric_rows) + "</tbody></table>"
+def line_chart(timeline, final_roots, metric, title, yaxis, names, div_id) -> str:
+    fig = go.Figure()
+    rounds = [s["round"] for s in timeline]
+    for i, root in enumerate(final_roots):
+        ys = [snap["empires"].get(root, {}).get(metric) for snap in timeline]
+        fig.add_trace(go.Scatter(
+            x=rounds, y=ys, mode="lines+markers",
+            name=display_name_of(root, names),
+            line=dict(color=PLOTLY_COLORS[i % len(PLOTLY_COLORS)], width=2),
+            hovertemplate="Round %{x}<br>%{y:,.2f}<extra>%{fullData.name}</extra>",
+        ))
+    fig.update_layout(
+        title=title, xaxis_title="Round", yaxis_title=yaxis,
+        template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+        height=460, margin=dict(l=50, r=20, t=60, b=40),
+        legend=dict(orientation="h", y=-0.18),
     )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id=div_id)
 
-    # data vintages footer
-    vint = "".join(f"<li><strong>{k}</strong>: {v}</li>" for k, v in VINTAGES.items())
 
-    html = f"""<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NewMericaMeme — data report</title>
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<style>{CSS}</style>
-</head><body>
-{HEADER.format(n_empires=n_empires)}
-<main>
+def bar_chart(final, final_roots, metric, title, yaxis, names, fmt=",.0f", div_id="bar") -> str:
+    sorted_roots = sorted(final_roots, key=lambda r: final[r][metric], reverse=True)
+    xs = [display_name_of(r, names) for r in sorted_roots]
+    ys = [final[r][metric] for r in sorted_roots]
+    fig = go.Figure(go.Bar(
+        x=xs, y=ys,
+        marker_color=[PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i in range(len(xs))],
+        text=[f"{y:{fmt}}" for y in ys], textposition="outside",
+        hovertemplate="%{x}<br>%{y:" + fmt + "}<extra></extra>",
+    ))
+    fig.update_layout(
+        title=title, yaxis_title=yaxis,
+        template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+        height=400, margin=dict(l=50, r=20, t=60, b=80), showlegend=False,
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id=div_id)
 
-<h2>Surviving empires</h2>
-<div class="empire-grid">{trees_html}</div>
 
-<h2>Cumulative empire metrics over rounds</h2>
-<p class="note">Each line is one of the {n_empires} surviving empires. The value at round R = sum of that empire's
-current members at round R. As a state is absorbed into an empire, its metric joins that empire's line.</p>
+# ============================================================
+# Merger tree rendering
+# ============================================================
+
+def _subtree_members(node, children):
+    members = [node]
+    for _, ch in children.get(node, []):
+        members.extend(_subtree_members(ch, children))
+    return members
+
+
+def _render_node(node, round_absorbed, children, names) -> str:
+    own_pop = STATES[node]["population"]
+    sub_members = _subtree_members(node, children)
+    sub_pop = sum(STATES[m]["population"] for m in sub_members)
+    badge = (f'<span class="round-badge">#{round_absorbed}</span>'
+             if round_absorbed is not None else '<span class="root-badge">root</span>')
+    if len(sub_members) > 1:
+        extra = f' <span class="pop">(self {own_pop:,}; subtree {sub_pop:,} across {len(sub_members)} states)</span>'
+    else:
+        extra = f' <span class="pop">({own_pop:,})</span>'
+    kids = children.get(node, [])
+    inner = ""
+    if kids:
+        inner = "<ul class='absorb-list'>" + "".join(
+            _render_node(ch, rnd, children, names) for rnd, ch in kids
+        ) + "</ul>"
+    return f"<li>{badge} {STATES[node]['name']}{extra}{inner}</li>"
+
+
+def render_tree(root, children, names) -> str:
+    name = display_name_of(root, names)
+    members = _subtree_members(root, children)
+    pop = sum(STATES[m]["population"] for m in members)
+    body = "<ul class='absorb-list root-list'>" + _render_node(root, None, children, names) + "</ul>"
+    return f"""<div class="empire-card">
+      <h3>{name}</h3>
+      <p class="empire-meta">{len(members)} states · pop {pop:,}</p>
+      {body}
+    </div>"""
+
+
+# ============================================================
+# Page 1: Overview (index.html)
+# ============================================================
+
+def build_index(model, rounds, names, image_rel) -> str:
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+    n = len(final_roots)
+    trees = "".join(render_tree(r, model["children"], names) for r in final_roots)
+    final_map = image_rel.get(42, "")
+
+    line_pop = line_chart(model["timeline"], final_roots, "population",
+                          "Empire population over rounds", "Population", names, "chart-pop")
+    line_gdp = line_chart(model["timeline"], final_roots, "gdp_million_usd",
+                          "Empire GDP over rounds", "GDP (millions USD)", names, "chart-gdp")
+    line_land = line_chart(model["timeline"], final_roots, "land_area_sq_mi",
+                           "Empire land area over rounds", "Land area (sq mi)", names, "chart-land")
+
+    # final metrics table
+    rows = []
+    for r in final_roots:
+        a = final[r]
+        rows.append(f"""<tr>
+          <td><strong>{display_name_of(r, names)}</strong><br><span class="note">root: {STATES[r]['name']}</span></td>
+          <td class="num">{len(a['members'])}</td>
+          <td class="num">{a['population']:,}</td>
+          <td class="num">{a['land_area_sq_mi']:,}</td>
+          <td class="num">${a['gdp_million_usd']:,.0f}M</td>
+          <td class="num">${a['gdp_per_capita_usd']:,.0f}</td>
+          <td class="num">{a['bachelors_or_higher_pct']:.1f}%</td>
+        </tr>""")
+    table = ("<table><thead><tr><th>Empire</th><th class='num'>States</th>"
+             "<th class='num'>Population</th><th class='num'>Land (mi²)</th>"
+             "<th class='num'>GDP</th><th class='num'>GDP/capita</th><th class='num'>Bachelor's+</th>"
+             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>")
+
+    final_map_html = (f'<img src="{final_map}" alt="round 42 map" '
+                      'style="width:100%;max-width:900px;border-radius:8px;border:1px solid #2a2f3a;display:block;margin:16px auto;"/>'
+                      if final_map else "")
+
+    header = f"""
+    <h1>NewMericaMeme</h1>
+    <p class="lede">A data report on the r/geographymemes voting series <em>"Top comment deletes a US State"</em>.
+      After 42 rounds and 41 absorptions, <strong>{n} empires</strong> remain — built from 50 states.
+      Use the nav above to dig into the round-by-round history, multi-metric pivots, and source data.</p>
+    """
+
+    body = f"""
+{final_map_html}
+
+<h2>Surviving empires — final ranking</h2>
+{table}
+
+<h2>Merger trees</h2>
+<p class="note">Each tree shows how a surviving empire grew. Children are listed in absorption order with round number.</p>
+<div class="empire-grid">{trees}</div>
+
+<h2>Empire metrics over rounds</h2>
 <div class="chart-block">{line_pop}</div>
 <div class="chart-block">{line_gdp}</div>
 <div class="chart-block">{line_land}</div>
 
-<h2>Final empire rankings</h2>
-<div class="metric-grid">
-  <div class="chart-block">{bar_pop}</div>
-  <div class="chart-block">{bar_gdp}</div>
+<h2>What's next</h2>
+<div class="next-cards">
+  <div class="next-card"><h3>📜 History</h3><p>Every round, post by post — map, OP's commentary, and the top comment that drove the next vote.</p><a href="history.html">Go to History →</a></div>
+  <div class="next-card"><h3>📊 Pivots</h3><p>Sankey of how 50 states funneled into 9 empires, plus per-empire deep dives across economy, education, health, energy, religion, and demographics.</p><a href="pivots.html">Go to Pivots →</a></div>
+  <div class="next-card"><h3>📚 Sources</h3><p>Every metric's source, vintage, and methodology notes.</p><a href="sources.html">Go to Sources →</a></div>
 </div>
-<div class="chart-block">{bar_land}</div>
-<div class="chart-block">{scatter}</div>
+"""
+    return page("index.html", "Overview", header, body)
 
-<h2>Final empires — metrics table</h2>
-{final_table}
+
+# ============================================================
+# Page 2: History (history.html)
+# ============================================================
+
+def build_history(model, rounds, names, image_rel) -> str:
+    jump = "".join(f'<a href="#round-{r["round"]}">#{r["round"]}</a>' for r in rounds)
+    items = []
+    for i, r in enumerate(rounds):
+        rnd = r["round"]
+        img = image_rel.get(rnd)
+        img_html = (f'<a href="{img}" target="_blank"><img class="tl-img" src="{img}" alt="Round {rnd} map"/></a>'
+                    if img else '<div class="note">(no image)</div>')
+
+        elim_html = ""
+        if r["eliminated_state"]:
+            elim_state = STATES[r["eliminated_state"]]["name"]
+            emp_root = r["empire_root"]
+            emp_name = display_name_of(emp_root, names) if emp_root else "—"
+            elim_html = (f'<div class="tl-elim">Eliminated: <strong>{elim_state}</strong>'
+                         f'<span class="arrow">→</span><span class="empire">{emp_name}</span>'
+                         f'<span class="source-pill">{r["source"]}</span></div>')
+        else:
+            elim_html = '<div class="tl-elim"><em>Kickoff — initial map, no elimination.</em></div>'
+
+        body_text = (r.get("post_body") or "").strip()
+        body_quote = f'<blockquote>{body_text}</blockquote>' if body_text else ""
+
+        # Top comment drives the NEXT round
+        next_round_label = rounds[i + 1]["round"] if i + 1 < len(rounds) else None
+        top = r.get("top_comment_body") or ""
+        top_html = ""
+        if top and next_round_label:
+            top_short = top[:400] + ("…" if len(top) > 400 else "")
+            top_html = (f'<div class="tl-top"><span class="lbl">Top comment (drove round #{next_round_label})</span>'
+                        f'{top_short}</div>')
+
+        date = ""
+        if r.get("created_utc"):
+            date = datetime.fromtimestamp(r["created_utc"], tz=timezone.utc).strftime("%Y-%m-%d")
+        post_url = r.get("post_url")
+        post_link = f' · <a href="{post_url}" target="_blank">reddit post</a>' if post_url else ""
+
+        items.append(f"""
+<article class="tl-item" id="round-{rnd}">
+  <header>
+    <span class="rnd-num">#{rnd:02d}</span>
+    <h3>{r.get("post_title") or "(post missing)"}</h3>
+    <span class="meta">{date}{post_link}</span>
+  </header>
+  <div class="tl-grid">
+    <div>{img_html}</div>
+    <div class="tl-body">
+      {elim_html}
+      {body_quote}
+      {top_html}
+      <p class="note" style="margin-top:8px;">{r.get("note", "")}</p>
+    </div>
+  </div>
+</article>""")
+
+    header = """
+    <h1>History</h1>
+    <p class="lede">All 42 rounds in order. Each entry shows the round's map, the OP's caption, the elimination event,
+    and the top comment that became the prompt for the next round.</p>
+    """
+
+    body = (f'<div class="jump-strip">{jump}</div>'
+            f'<div class="timeline">{"".join(items)}</div>')
+
+    return page("history.html", "History", header, body, include_plotly=False)
+
+
+# ============================================================
+# Page 3: Pivots (pivots.html)
+# ============================================================
+
+def sankey_chart(model, names) -> str:
+    """50 original states -> 9 final empires."""
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+    final_root_of = model["final_root_of"]
+    states = sorted(model["states_in_play"], key=lambda s: STATES[s]["name"])
+
+    state_nodes = [STATES[s]["name"] for s in states]
+    empire_nodes = [display_name_of(r, names) for r in final_roots]
+    nodes = state_nodes + empire_nodes
+    # color empires distinctly; states inherit destination color
+    empire_color = {r: PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i, r in enumerate(final_roots)}
+    node_colors = [empire_color[final_root_of[s]] for s in states] + [empire_color[r] for r in final_roots]
+
+    srcs, tgts, vals, link_colors = [], [], [], []
+    for i, s in enumerate(states):
+        dest_root = final_root_of[s]
+        srcs.append(i)
+        tgts.append(len(states) + final_roots.index(dest_root))
+        vals.append(STATES[s]["population"])
+        # translucent destination color
+        c = empire_color[dest_root]
+        link_colors.append(_hex_to_rgba(c, 0.35))
+
+    fig = go.Figure(go.Sankey(
+        arrangement="snap",
+        node=dict(label=nodes, color=node_colors, pad=10, thickness=14,
+                  line=dict(color="rgba(0,0,0,0)", width=0)),
+        link=dict(source=srcs, target=tgts, value=vals, color=link_colors,
+                  hovertemplate="%{source.label} → %{target.label}<br>pop %{value:,}<extra></extra>"),
+    ))
+    fig.update_layout(
+        title="Sankey: 50 original states → 9 surviving empires (flow width = population)",
+        font=dict(color="#e6e8ec", size=11),
+        template="plotly_dark", paper_bgcolor="#161a22",
+        height=900, margin=dict(l=20, r=20, t=60, b=20),
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="sankey")
+
+
+def _hex_to_rgba(hex_color: str, alpha: float) -> str:
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r},{g},{b},{alpha})"
+
+
+def chord_like_chart(model, names) -> str:
+    """A 'who absorbed whom' bubble-arc chart isn't trivial in Plotly; use a stacked-bar
+    by absorbing-empire showing each round's transfer instead — same information density."""
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+    empire_color = {r: PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i, r in enumerate(final_roots)}
+    final_root_of = model["final_root_of"]
+
+    # For each round event, where did the eliminated state's *final empire* end up?
+    fig = go.Figure()
+    rounds_seen = []
+    for ev in model["events"]:
+        if not ev["eliminated"]:
+            continue
+        elim = ev["eliminated"]
+        final_dest = final_root_of[elim]
+        round_num = ev["round"]
+        rounds_seen.append(round_num)
+        fig.add_trace(go.Bar(
+            x=[round_num], y=[STATES[elim]["population"]],
+            name=STATES[elim]["name"],
+            marker_color=empire_color.get(final_dest, "#888"),
+            showlegend=False,
+            hovertemplate=f"<b>{STATES[elim]['name']}</b><br>Round %{{x}}<br>Pop %{{y:,}}<br>Eventually in: {display_name_of(final_dest, names)}<extra></extra>",
+        ))
+    fig.update_layout(
+        title="Population eliminated per round (bar color = final empire that the eliminated state ended up in)",
+        barmode="stack", template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+        xaxis=dict(title="Round", dtick=1), yaxis=dict(title="Population eliminated"),
+        height=420, margin=dict(l=50, r=20, t=60, b=40), showlegend=False,
+    )
+    # legend swatches as an HTML strip below
+    swatches = "".join(
+        f'<span style="display:inline-flex;align-items:center;gap:6px;margin:0 12px 6px 0;">'
+        f'<span style="width:14px;height:14px;border-radius:3px;background:{empire_color[r]};display:inline-block;"></span>'
+        f'<span style="font-size:.85rem;">{display_name_of(r, names)}</span></span>'
+        for r in final_roots
+    )
+    return (fig.to_html(full_html=False, include_plotlyjs=False, div_id="chord")
+            + f'<div class="note" style="margin-top:6px;">{swatches}</div>')
+
+
+def animated_map_chart(model, names) -> str:
+    """Plotly choropleth animation: per round, color each state by its current empire."""
+    final_roots = sorted(model["final"].keys(),
+                         key=lambda r: model["final"][r]["population"], reverse=True)
+    empire_color = {r: PLOTLY_COLORS[i % len(PLOTLY_COLORS)] for i, r in enumerate(final_roots)}
+    states_in_play = model["states_in_play"]
+
+    # Build per-round ownership snapshot
+    frames = []
+    # We need to re-derive ownership from timeline snapshots
+    for snap in model["timeline"]:
+        owner_by_state = {}
+        for root, agg in snap["empires"].items():
+            for m in agg["members"]:
+                owner_by_state[m] = root
+        locations = []
+        colors = []
+        texts = []
+        for s in states_in_play:
+            owner = owner_by_state.get(s, s)
+            locations.append(s)
+            colors.append(empire_color.get(owner, "#444"))
+            texts.append(f"{STATES[s]['name']}<br>Empire: {display_name_of(owner, names)}")
+        frames.append(go.Frame(
+            data=[go.Choropleth(
+                locations=locations, locationmode="USA-states",
+                z=[final_roots.index(owner_by_state.get(s, s)) if owner_by_state.get(s, s) in final_roots else -1 for s in states_in_play],
+                colorscale=[[i / max(1, len(final_roots) - 1), empire_color[r]] for i, r in enumerate(final_roots)],
+                showscale=False, text=texts, hovertemplate="%{text}<extra></extra>",
+                marker_line_color="#0f1115", marker_line_width=0.5,
+            )],
+            name=str(snap["round"]),
+        ))
+
+    init = frames[-1].data[0]
+    fig = go.Figure(data=[init], frames=frames)
+    fig.update_layout(
+        title="Round-by-round empire ownership (use slider or Play)",
+        geo=dict(scope="usa", bgcolor="#161a22", lakecolor="#0f1115",
+                 landcolor="#1a1f29", showlakes=True),
+        template="plotly_dark", paper_bgcolor="#161a22",
+        height=560, margin=dict(l=10, r=10, t=60, b=10),
+        updatemenus=[dict(type="buttons", showactive=False, y=0, x=0.08, xanchor="right", yanchor="bottom",
+                          buttons=[
+                              dict(label="▶ Play", method="animate",
+                                   args=[None, dict(frame=dict(duration=500, redraw=True),
+                                                    fromcurrent=True, transition=dict(duration=0))]),
+                              dict(label="⏸ Pause", method="animate",
+                                   args=[[None], dict(frame=dict(duration=0, redraw=False),
+                                                      mode="immediate", transition=dict(duration=0))]),
+                          ])],
+        sliders=[dict(active=len(frames) - 1, currentvalue=dict(prefix="Round: "),
+                      pad=dict(t=40),
+                      steps=[dict(method="animate",
+                                  args=[[f.name],
+                                        dict(mode="immediate",
+                                             frame=dict(duration=0, redraw=True),
+                                             transition=dict(duration=0))],
+                                  label=f.name)
+                             for f in frames])],
+    )
+    return fig.to_html(full_html=False, include_plotlyjs=False, div_id="animap")
+
+
+def build_pivots(model, rounds, names) -> str:
+    final = model["final"]
+    final_roots = sorted(final.keys(), key=lambda r: final[r]["population"], reverse=True)
+
+    sankey = sankey_chart(model, names)
+    chord = chord_like_chart(model, names)
+    animap = animated_map_chart(model, names)
+
+    # Per-metric tabs
+    tab_btns = []
+    panels = []
+    for i, (group_name, metrics) in enumerate(METRIC_GROUPS.items()):
+        cls = " active" if i == 0 else ""
+        tab_btns.append(f'<button class="tab-btn{cls}" data-group="g{i}">{group_name}</button>')
+        # build a bar chart per metric in this group
+        charts = []
+        for field, label, agg_kind, prefix, suffix in metrics:
+            fmt = ",.0f"
+            if "%" in suffix or field.endswith("_pct"):
+                fmt = ",.1f"
+            elif field.endswith("_years") or field == "median_age":
+                fmt = ",.1f"
+            sorted_roots = sorted(final_roots, key=lambda r: final[r].get(field, 0), reverse=True)
+            xs = [display_name_of(r, names) for r in sorted_roots]
+            ys = [final[r].get(field, 0) for r in sorted_roots]
+            text = [f"{prefix}{y:{fmt}}{suffix}" for y in ys]
+            fig = go.Figure(go.Bar(
+                x=xs, y=ys,
+                marker_color=[PLOTLY_COLORS[j % len(PLOTLY_COLORS)] for j in range(len(xs))],
+                text=text, textposition="outside",
+                hovertemplate="%{x}<br>" + prefix + "%{y:" + fmt + "}" + suffix + "<extra></extra>",
+            ))
+            fig.update_layout(
+                title=f"{label} — final empires ({agg_kind})",
+                template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+                height=360, margin=dict(l=40, r=20, t=50, b=80), showlegend=False,
+            )
+            charts.append(fig.to_html(full_html=False, include_plotlyjs=False, div_id=f"bar-{field}"))
+        panel_cls = " active" if i == 0 else ""
+        panels.append(f'<div class="metric-panel{panel_cls}" id="g{i}">'
+                      f'<div class="metric-grid">'
+                      + "".join(f'<div class="chart-block">{c}</div>' for c in charts)
+                      + "</div></div>")
+
+    tabs_html = ('<div class="metric-tabs">' + "".join(tab_btns) + "</div>"
+                 + "".join(panels))
+
+    # Image-vs-model area share chart
+    area_html = ""
+    if IMG_AREA_JSON.exists():
+        img_data = json.loads(IMG_AREA_JSON.read_text(encoding="utf-8"))
+        total_land = sum(a["land_area_sq_mi"] for a in final.values())
+        sorted_roots = sorted(final_roots, key=lambda r: final[r]["land_area_sq_mi"], reverse=True)
+        xs = [display_name_of(r, names) for r in sorted_roots]
+        model_pct = [final[r]["land_area_sq_mi"] / total_land * 100 for r in sorted_roots]
+        img_pct = [img_data["shares_pct"].get(r, 0) for r in sorted_roots]
+        fig = go.Figure()
+        fig.add_trace(go.Bar(name="Whole-state model %", x=xs, y=model_pct, marker_color="#6cb1ff",
+                             text=[f"{v:.1f}%" for v in model_pct], textposition="outside"))
+        fig.add_trace(go.Bar(name="Image-derived %", x=xs, y=img_pct, marker_color="#ffae6c",
+                             text=[f"{v:.1f}%" for v in img_pct], textposition="outside"))
+        fig.update_layout(
+            title="Map area share: whole-state model vs. round-42 image segmentation",
+            barmode="group", template="plotly_dark", paper_bgcolor="#161a22", plot_bgcolor="#161a22",
+            height=460, margin=dict(l=50, r=20, t=60, b=80),
+            legend=dict(orientation="h", y=-0.22),
+        )
+        area_html = fig.to_html(full_html=False, include_plotlyjs=False, div_id="area-compare")
+
+    header = """
+    <h1>Pivots</h1>
+    <p class="lede">Multiple lenses on the same data. The Sankey shows where every state ended up;
+    the round-by-round bar shows when each elimination happened and where the population eventually landed;
+    the animated map shows empire boundaries growing over time; and the metric tabs slice the final empires by
+    economy, education, health, energy, religion, demographics, and geography.</p>
+    """
+
+    body = f"""
+<h2>Sankey — 50 states → 9 empires</h2>
+<div class="chart-block">{sankey}</div>
+
+<h2>Round-by-round transfers</h2>
+<p class="note">Each bar is one round's eliminated state; bar height = its population; color = the final empire that the eliminated state eventually ended up in (after possible chained absorptions).</p>
+<div class="chart-block">{chord}</div>
+
+<h2>Animated map</h2>
+<p class="note">Each state is colored by its current empire owner. Use the slider or ▶ Play to scrub through rounds. <em>Note:</em> This uses Plotly's USA-states basemap and assigns each whole state to its current empire — splits the OP drew mid-state are not shown here (see the area-share chart below for that discrepancy).</p>
+<div class="chart-block">{animap}</div>
+
+<h2>Per-metric breakdowns</h2>
+<p class="note">Sums where appropriate (population, GDP, land area), otherwise population-weighted means. Click a category.</p>
+{tabs_html}
 
 <h2>Splits sanity check — model vs. image</h2>
-<p class="note">The whole-state attribution above treats each absorbed state as one indivisible unit assigned to a single empire. In reality the meme's round-42 map shows states <strong>split</strong> between empires (e.g. California sliced between New Mexico, Hawaii, Cascadia, and Colorado; Texas mostly going to New Mexico). The bars below compare each empire's share of the colored map by whole-state model vs. by pixel-counting the round-42 image. Large gaps highlight where image-based attribution would refine the population/GDP estimates above.</p>
-<p class="note"><em>Caveats:</em> Hawaii's apparent share is understated because Alaska's enormous real-world area is shown in a small inset; Wisconsin/Minnesota/Michigan all use very similar greens on this palette and may be partially misclassified between each other.</p>
-<div class="chart-block">{area_compare_html or '<em class="note">(run <code>python image_analysis.py</code> first to populate data/image_area_round42.json)</em>'}</div>
+<p class="note">The whole-state model assigns each absorbed state to one empire. In reality the round-42 map shows states <strong>split</strong> between empires (e.g., California sliced between New Mexico, Hawaii, Cascadia, and Colorado). Below: each empire's share of the colored map by model vs. by pixel-counting the actual round-42 image.</p>
+<div class="chart-block">{area_html or '<em class="note">(run image_analysis.py first)</em>'}</div>
 
-<h2>Round-by-round ledger</h2>
-<p class="note">Round 1 is the kickoff (no elimination). Sources: <code>body</code> = parsed from OP's post body; <code>prev-top</code> = top comment of the previous round; <code>list</code> = OP's running removal list (#20/#21); <code>deduced</code> = only unaccounted state remaining; <code>guess</code> = editorial guess (low confidence).</p>
-{ledger}
-
-<footer>
-  <p><strong>Data vintages</strong></p>
-  <ul>{vint}</ul>
-  <p>Built locally; no live API calls. Source: <a href="https://github.com/milt0r/NewMericaMeme">milt0r/NewMericaMeme</a>. Map images © the original Reddit author.</p>
-</footer>
-
-</main>
-</body></html>
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {{
+  btn.addEventListener('click', () => {{
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.metric-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.group).classList.add('active');
+    window.dispatchEvent(new Event('resize'));
+  }});
+}});
+</script>
 """
-    OUT.write_text(html, encoding="utf-8")
-    print(f"Wrote {OUT}  ({OUT.stat().st_size:,} bytes)")
+    return page("pivots.html", "Pivots", header, body)
+
+
+# ============================================================
+# Page 4: Sources (sources.html)
+# ============================================================
+
+def build_sources() -> str:
+    rows = []
+    for field, (src, url) in SOURCES.items():
+        rows.append(f'<tr><td>{field}</td><td>{src}</td><td><a href="{url}" target="_blank">link</a></td></tr>')
+    src_table = ('<table class="src-table"><thead><tr><th>Field</th><th>Source</th><th>URL</th></tr></thead><tbody>'
+                 + "".join(rows) + "</tbody></table>")
+
+    header = """
+    <h1>Sources & methodology</h1>
+    <p class="lede">Every per-state metric in this report is hard-coded from an authoritative public source.
+    No live API calls are made when building the site. Below: the source + vintage for each field, and notes on
+    the methodology behind the merger model.</p>
+    """
+
+    body = f"""
+<h2>Per-field data sources</h2>
+{src_table}
+
+<h2>Methodology</h2>
+<h3>Round ledger</h3>
+<p>All 42 series posts are cached locally under <code>data/cache/posts/</code> with their map images under <code>data/images/</code>. For each round, the OP's post body names the eliminated state and (usually) the absorbing empires. Where multiple empires share a state, we pick the dominant absorber; the splits sanity-check chart on the Pivots page surfaces these approximations.</p>
+
+<h3>Merger forest</h3>
+<p>We use a union-find over the 50 states (DC excluded — it is not on the meme map). Each round, the eliminated state's current empire root is pointed at the absorbing empire's current root, producing a tree. The resulting forest contains exactly 9 surviving roots, matching the on-map "REMAINING: 9" label on round-42's image.</p>
+
+<h3>Aggregation rules</h3>
+<ul>
+  <li><strong>Sums:</strong> population, land area, water area, GDP.</li>
+  <li><strong>Population-weighted means:</strong> income, education %s, unemployment, poverty, life expectancy, obesity, renewable %, religion %s, demographic %s, median age.</li>
+  <li><strong>Derived:</strong> GDP per capita = total GDP ÷ total population; water % = water area ÷ total area.</li>
+</ul>
+
+<h3>Image-derived area share</h3>
+<p>The round-42 map is color-segmented in <code>image_analysis.py</code>: pixels are classified to the nearest of nine hand-tuned empire anchor colors (after masking near-white background). Resulting per-empire pixel shares are saved to <code>data/image_area_round42.json</code> and compared against the whole-state model on the Pivots page. Caveats: Wisconsin/Minnesota/Michigan use very similar greens and may be partially misclassified between each other; Hawaii's apparent share is understated because Alaska is rendered as a small inset on the OP's map.</p>
+
+<h3>Reproducing this report</h3>
+<pre style="background:#1a1f29;border:1px solid #232a36;border-radius:6px;padding:14px;overflow:auto;">python -m venv .venv
+.\\.venv\\Scripts\\Activate.ps1   # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+python fetch.py          # populates data/cache/ and data/images/ (set USER in fetch.py first)
+python parse.py          # builds data/rounds.json from cache + overrides
+python image_analysis.py # produces data/image_area_round42.json
+python build_report.py   # writes docs/*.html
+</pre>
+"""
+    return page("sources.html", "Sources", header, body, include_plotly=False)
+
+
+# ============================================================
+# Main
+# ============================================================
+
+def main() -> int:
+    DOCS.mkdir(parents=True, exist_ok=True)
+    data = load_rounds()
+    rounds = data["rounds"]
+    names = data["empire_display_names"]
+    model = build_model(rounds)
+    image_rel = copy_maps(rounds)
+
+    pages = {
+        "index.html":   build_index(model, rounds, names, image_rel),
+        "history.html": build_history(model, rounds, names, image_rel),
+        "pivots.html":  build_pivots(model, rounds, names),
+        "sources.html": build_sources(),
+    }
+    for name, html in pages.items():
+        out = DOCS / name
+        out.write_text(html, encoding="utf-8")
+        print(f"  wrote {out}  ({out.stat().st_size:,} bytes)")
+
+    # Touch .nojekyll so GH Pages serves as-is
+    (DOCS / ".nojekyll").touch()
     return 0
 
 

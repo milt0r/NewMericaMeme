@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sources — NewMericaMeme</title>
+
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #0f1115; color: #e6e8ec; }
+.topnav { background: #161a22; border-bottom: 1px solid #232a36; position: sticky; top: 0; z-index: 50; }
+.topnav-inner { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.topnav-brand { font-weight: 700; font-size: 1.05rem; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.topnav-links a { color: #c6cfe2; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: .95rem; }
+.topnav-links a:hover { background: #1e2531; color: #fff; }
+.topnav-links a.current { background: #2a3142; color: #fff; }
+.topnav-repo { margin-left: auto; font-size: .85rem; color: #7a8294; }
+.topnav-repo a { color: #6cb1ff; text-decoration: none; }
+header.page { padding: 40px 24px 16px; max-width: 1180px; margin: 0 auto; }
+h1 { font-size: 2.2rem; margin: 0 0 8px; }
+h2 { border-bottom: 1px solid #2a2f3a; padding-bottom: 8px; margin-top: 48px; }
+h3 { margin: 0 0 4px; font-size: 1.1rem; }
+.lede { color: #a9b0bd; font-size: 1.02rem; max-width: 740px; }
+main { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .92rem; }
+th, td { border-bottom: 1px solid #232a36; padding: 8px 6px; text-align: left; vertical-align: top; }
+th { background: #1a1f29; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.note { font-size: .85rem; color: #8b93a7; }
+a { color: #6cb1ff; }
+footer { color: #7a8294; font-size: .8rem; margin-top: 60px; border-top: 1px solid #232a36; padding-top: 16px; }
+.chart-block { margin: 20px 0 40px; }
+.empire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.empire-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 16px; }
+.empire-meta { color: #8b93a7; font-size: .85rem; margin: 0 0 8px; }
+.absorb-list { padding-left: 18px; margin: 0; font-size: .92rem; }
+.absorb-list li { margin: 3px 0; }
+.absorb-list ul { padding-left: 18px; margin: 3px 0; border-left: 2px solid #2a3142; }
+.root-list { padding-left: 0; list-style: none; }
+.root-list > li { font-weight: 600; }
+.round-badge { background: #2a3142; color: #c6cfe2; padding: 1px 6px; border-radius: 4px; font-size: .75rem; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.root-badge { background: #3a4a66; color: #d6e0f5; padding: 1px 6px; border-radius: 4px; font-size: .7rem; margin-right: 6px; text-transform: uppercase; }
+.pop { color: #7a8294; font-size: .8rem; }
+.source-pill { display: inline-block; font-size: .7rem; padding: 1px 6px; border-radius: 999px; background: #243044; color: #a8b6cf; margin-left: 6px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
+.next-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.next-card { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 18px; }
+.next-card a { display: inline-block; margin-top: 8px; font-weight: 600; }
+
+/* History page */
+.timeline { position: relative; margin: 0; padding: 0; }
+.tl-item { background: #161a22; border: 1px solid #232a36; border-radius: 10px; padding: 18px; margin: 18px 0; scroll-margin-top: 80px; }
+.tl-item header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; padding: 0; max-width: none; }
+.tl-item .rnd-num { font-size: 1.8rem; font-weight: 800; color: #6cb1ff; min-width: 60px; }
+.tl-item h3 { font-size: 1.1rem; margin: 0; }
+.tl-item .meta { color: #7a8294; font-size: .85rem; margin-left: auto; }
+.tl-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
+@media (max-width: 720px) { .tl-grid { grid-template-columns: 1fr; } }
+.tl-img { width: 100%; height: auto; border-radius: 6px; border: 1px solid #2a2f3a; display: block; }
+.tl-body { font-size: .95rem; }
+.tl-body blockquote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid #3a4a66; color: #c6cfe2; background: #1a1f29; border-radius: 0 6px 6px 0; }
+.tl-elim { background: #2a3142; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: .95rem; }
+.tl-elim strong { color: #ff9b9b; }
+.tl-elim .arrow { color: #7a8294; margin: 0 6px; }
+.tl-elim .empire { color: #a8e6c1; font-weight: 600; }
+.tl-top { background: #1a2330; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: .9rem; color: #c6cfe2; }
+.tl-top .lbl { color: #7a8294; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; }
+
+/* Anchor jump strip */
+.jump-strip { background: #161a22; padding: 10px 24px; border-bottom: 1px solid #232a36; position: sticky; top: 50px; z-index: 40; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; max-width: 100%; }
+.jump-strip a { color: #6cb1ff; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: .82rem; font-variant-numeric: tabular-nums; }
+.jump-strip a:hover { background: #2a3142; }
+
+/* Pivots tabs */
+.metric-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.metric-tabs button { background: #161a22; border: 1px solid #232a36; color: #c6cfe2; padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: .9rem; }
+.metric-tabs button.active { background: #2a3142; color: #fff; border-color: #3a4a66; }
+.metric-panel { display: none; }
+.metric-panel.active { display: block; }
+
+/* Sources */
+.src-table td:first-child { font-weight: 600; }
+</style>
+</head><body>
+<nav class="topnav"><div class="topnav-inner">
+  <span class="topnav-brand">NewMericaMeme</span>
+  <span class="topnav-links"><a href="index.html" class="">Overview</a><a href="history.html" class="">History</a><a href="pivots.html" class="">Pivots</a><a href="sources.html" class="current">Sources</a></span>
+  <span class="topnav-repo"><a href="https://github.com/milt0r/NewMericaMeme">GitHub</a></span>
+</div></nav>
+<header class="page">
+    <h1>Sources & methodology</h1>
+    <p class="lede">Every per-state metric in this report is hard-coded from an authoritative public source.
+    No live API calls are made when building the site. Below: the source + vintage for each field, and notes on
+    the methodology behind the merger model.</p>
+    </header>
+<main>
+
+<h2>Per-field data sources</h2>
+<table class="src-table"><thead><tr><th>Field</th><th>Source</th><th>URL</th></tr></thead><tbody><tr><td>population</td><td>US Census 2020 Decennial</td><td><a href="https://www.census.gov/data/tables/2020/dec/2020-apportionment-data.html" target="_blank">link</a></td></tr><tr><td>land_area_sq_mi</td><td>US Census Gazetteer 2020</td><td><a href="https://www.census.gov/geographies/reference-files/2020/geo/gazetteer-files.html" target="_blank">link</a></td></tr><tr><td>water_area_sq_mi</td><td>US Census Gazetteer 2020</td><td><a href="https://www.census.gov/geographies/reference-files/2020/geo/gazetteer-files.html" target="_blank">link</a></td></tr><tr><td>gdp_million_usd</td><td>BEA, current-dollar state GDP 2023</td><td><a href="https://www.bea.gov/data/gdp/gdp-state" target="_blank">link</a></td></tr><tr><td>median_household_income_usd</td><td>US Census ACS 2022 5-year</td><td><a href="https://data.census.gov/table?q=S1901" target="_blank">link</a></td></tr><tr><td>unemployment_pct</td><td>BLS, state annual unemployment 2023</td><td><a href="https://www.bls.gov/lau/staadata.htm" target="_blank">link</a></td></tr><tr><td>poverty_pct</td><td>US Census ACS 2022 5-year, all-ages SAIPE</td><td><a href="https://www.census.gov/data-tools/demo/saipe/" target="_blank">link</a></td></tr><tr><td>hs_or_higher_pct</td><td>US Census ACS 2022 5-year, adults 25+</td><td><a href="https://data.census.gov/table?q=S1501" target="_blank">link</a></td></tr><tr><td>bachelors_or_higher_pct</td><td>US Census ACS 2022 5-year, adults 25+</td><td><a href="https://data.census.gov/table?q=S1501" target="_blank">link</a></td></tr><tr><td>advanced_degree_pct</td><td>US Census ACS 2022 5-year, adults 25+ (grad/pro)</td><td><a href="https://data.census.gov/table?q=S1501" target="_blank">link</a></td></tr><tr><td>adult_obesity_pct</td><td>CDC BRFSS 2022</td><td><a href="https://www.cdc.gov/obesity/data/prevalence-maps.html" target="_blank">link</a></td></tr><tr><td>life_expectancy_years</td><td>CDC NCHS, US Life Expectancy 2020</td><td><a href="https://www.cdc.gov/nchs/data-visualization/state-life-expectancy/index.htm" target="_blank">link</a></td></tr><tr><td>renewable_electricity_pct</td><td>US EIA State Electricity Profiles 2022, renewables share of generation</td><td><a href="https://www.eia.gov/electricity/state/" target="_blank">link</a></td></tr><tr><td>christian_pct</td><td>Pew Religious Landscape Study 2014</td><td><a href="https://www.pewresearch.org/religion/religious-landscape-study/" target="_blank">link</a></td></tr><tr><td>unaffiliated_pct</td><td>Pew Religious Landscape Study 2014</td><td><a href="https://www.pewresearch.org/religion/religious-landscape-study/" target="_blank">link</a></td></tr><tr><td>median_age</td><td>US Census ACS 2022 5-year</td><td><a href="https://data.census.gov/table?q=S0101" target="_blank">link</a></td></tr><tr><td>foreign_born_pct</td><td>US Census ACS 2022 5-year</td><td><a href="https://data.census.gov/table?q=B05002" target="_blank">link</a></td></tr><tr><td>white_alone_pct</td><td>US Census 2020 Decennial, white alone, not Hispanic</td><td><a href="https://www.census.gov/quickfacts/" target="_blank">link</a></td></tr><tr><td>black_alone_pct</td><td>US Census 2020 Decennial, Black alone</td><td><a href="https://www.census.gov/quickfacts/" target="_blank">link</a></td></tr><tr><td>hispanic_pct</td><td>US Census 2020 Decennial, Hispanic or Latino</td><td><a href="https://www.census.gov/quickfacts/" target="_blank">link</a></td></tr><tr><td>asian_alone_pct</td><td>US Census 2020 Decennial, Asian alone</td><td><a href="https://www.census.gov/quickfacts/" target="_blank">link</a></td></tr></tbody></table>
+
+<h2>Methodology</h2>
+<h3>Round ledger</h3>
+<p>All 42 series posts are cached locally under <code>data/cache/posts/</code> with their map images under <code>data/images/</code>. For each round, the OP's post body names the eliminated state and (usually) the absorbing empires. Where multiple empires share a state, we pick the dominant absorber; the splits sanity-check chart on the Pivots page surfaces these approximations.</p>
+
+<h3>Merger forest</h3>
+<p>We use a union-find over the 50 states (DC excluded — it is not on the meme map). Each round, the eliminated state's current empire root is pointed at the absorbing empire's current root, producing a tree. The resulting forest contains exactly 9 surviving roots, matching the on-map "REMAINING: 9" label on round-42's image.</p>
+
+<h3>Aggregation rules</h3>
+<ul>
+  <li><strong>Sums:</strong> population, land area, water area, GDP.</li>
+  <li><strong>Population-weighted means:</strong> income, education %s, unemployment, poverty, life expectancy, obesity, renewable %, religion %s, demographic %s, median age.</li>
+  <li><strong>Derived:</strong> GDP per capita = total GDP ÷ total population; water % = water area ÷ total area.</li>
+</ul>
+
+<h3>Image-derived area share</h3>
+<p>The round-42 map is color-segmented in <code>image_analysis.py</code>: pixels are classified to the nearest of nine hand-tuned empire anchor colors (after masking near-white background). Resulting per-empire pixel shares are saved to <code>data/image_area_round42.json</code> and compared against the whole-state model on the Pivots page. Caveats: Wisconsin/Minnesota/Michigan use very similar greens and may be partially misclassified between each other; Hawaii's apparent share is understated because Alaska is rendered as a small inset on the OP's map.</p>
+
+<h3>Reproducing this report</h3>
+<pre style="background:#1a1f29;border:1px solid #232a36;border-radius:6px;padding:14px;overflow:auto;">python -m venv .venv
+.\.venv\Scripts\Activate.ps1   # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+python fetch.py          # populates data/cache/ and data/images/ (set USER in fetch.py first)
+python parse.py          # builds data/rounds.json from cache + overrides
+python image_analysis.py # produces data/image_area_round42.json
+python build_report.py   # writes docs/*.html
+</pre>
+
+<footer>
+  <p>Source: <a href="https://github.com/milt0r/NewMericaMeme">milt0r/NewMericaMeme</a> · static report, no live API calls · map images from the original Reddit posts</p>
+</footer>
+</main>
+</body></html>
